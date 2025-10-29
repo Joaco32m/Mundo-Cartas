@@ -1,0 +1,137 @@
+.container-header {
+  display: flex;
+  background-color: #6d11a3;
+  height: 7rem;
+  gap: 100px;
+}
+
+.logo-mundo_cartas {
+  display: flex;
+  width: 20%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.logo-mundo_cartas a img {
+  width: 17rem;
+}
+
+.d-flex {
+  display: flex;
+  width: 25rem;
+  align-items: center;
+}
+
+.container-header {
+  display: flex;
+  background-color: #6d11a3;
+  height: 7rem;
+  gap: 100px;
+}
+
+.title-mundo_cartas {
+  display: flex;
+  width: 20%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.title-mundo_cartas a img {
+  width: 17rem;
+}
+
+.barra-busqueda {
+  display: flex;
+  align-items: center;
+  width: 25rem;
+}
+
+.barra-busqueda form .input-group {
+  width: 25rem;
+}
+
+main {
+  width: 100%;
+  height: 100%;
+}
+footer {
+  display: flex;
+  background-color: #6d11a3;
+  width: 100%;
+  height: auto;
+  gap: 25px;
+}
+
+.container-logo-mundo-cartas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15%;
+  height: 100%;
+  flex-direction: column;
+  gap: 7px;
+  margin-left: 6rem;
+  margin-top: 2rem;
+}
+.container-logo-mundo-cartas img{
+  width: 7rem;
+  border-radius: 25px;
+}
+
+.container-logo-mundo-cartas p{
+  font-size: 10px;
+}
+
+.container-informacion{
+  width: 70%;
+  height: 100%;
+  text-align: center;
+  gap: 200px;
+}
+
+.container-informacion ul {
+  display: flex;
+  width: 100%;
+  height: auto;
+  list-style: none;
+  margin-top: 30px;
+  gap: 80px;
+}
+
+.container-informacion li h2 {
+  font-size: 2rem;
+  font-family: "Pacifico", cursive;
+  opacity: 76%;
+}
+
+.container-informacion li {
+  width: 20rem;
+}
+
+.container-informacion li .p{
+  font-size: 1rem;
+}
+
+.container-informacion li + li {
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  margin-left: 25px;
+  padding-left: 25px;
+}
+
+.container-informacion .info a{
+  display: flex;
+  text-decoration: none;
+  color: black;
+  padding-top: 10px;
+}
+
+.icon-redes a .bi-instagram, .bi-facebook{
+  font-size: 2rem;
+  color: #000;
+}
+
+.icon-redes{
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
