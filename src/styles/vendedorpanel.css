@@ -1,0 +1,183 @@
+
+
+.vendedor-panel {
+  padding: 1.6rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f7f7f7;
+}
+
+.titulo-panel {
+  font-size: 1.6rem;
+  color: #2a2a2a;
+  margin-bottom: 1rem;
+}
+
+.vendedor-nav {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1.2rem;
+}
+
+.vendedor-nav button {
+  background: transparent;
+  border: 1px solid #e2e2e2;
+  padding: 0.55rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.vendedor-nav button.active {
+  background: #662d91; 
+  color: white;
+  border-color: #662d91;
+  box-shadow: 0 2px 6px rgba(102,45,145,0.18);
+}
+
+.vendedor-content {
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+
+.resumen-section .resumen-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.resumen-card {
+  background: #fff;
+  border-left: 6px solid #ffcc00;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.resumen-card.ingresos {
+  border-left-color: #2e7d32;
+}
+
+.resumen-card h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.resumen-card .valor {
+  margin-top: 0.6rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #662d91;
+}
+
+.resumen-card.ingresos .valor { color: #2e7d32; }
+
+.pedidos-count { font-size: 1.6rem; }
+
+.pedidos-section h3 { margin-top: 0; }
+
+.pedidos-table-wrap {
+  overflow-x: auto;
+}
+
+.pedidos-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.pedidos-table thead {
+  background: #f2f2f2;
+  color: #222;
+}
+
+.pedidos-table th, .pedidos-table td {
+  padding: 0.8rem 0.6rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.btn-primary {
+  background: #662d91;
+  color: white;
+  border: none;
+  padding: 0.45rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-primary.small { padding: 0.3rem 0.45rem; font-size: 0.85rem; }
+
+
+.chip {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.chip.delivered { background: #e8f5e9; color: #2e7d32; }
+.chip.pending { background: #fff8e1; color: #f9a825; }
+
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.modal-card {
+  width: 90%;
+  max-width: 720px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #eee;
+  align-items: center;
+}
+
+.modal-body { padding: 1rem; max-height: 60vh; overflow-y: auto; }
+.modal-footer { padding: 0.75rem 1rem; border-top: 1px solid #eee; text-align: right; }
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.detalle-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.6rem;
+}
+
+.detalle-table th, .detalle-table td {
+  border-bottom: 1px solid #eee;
+  padding: 0.5rem 0.4rem;
+  text-align: left;
+}
+
+.total-strong { margin-top: 0.8rem; font-size: 1.05rem; font-weight: 700; }
+
+
+@media (max-width: 920px) {
+  .resumen-section .resumen-cards {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .pedidos-table { min-width: 600px; }
+}

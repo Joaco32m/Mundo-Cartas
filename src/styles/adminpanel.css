@@ -1,0 +1,34 @@
+.admin-panel {
+  text-align: center;
+  padding: 30px;
+}
+
+.admin-nav {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.admin-nav button {
+  background-color: #e0e0e0;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.admin-nav button.active {
+  background-color: #6d11a3;
+  color: white;
+}
+
+.admin-content {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  width: 80%;
+  margin: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,337 @@
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+
+main {
+  flex: 1;
+}
+
+
+.container-header {
+  display: flex;
+  background-color: #6d11a3;
+  height: 7rem;
+  gap: 100px;
+}
+
+.logo-mundo_cartas {
+  display: flex;
+  width: 20%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.logo-mundo_cartas a img {
+  width: 17rem;
+}
+
+.d-flex {
+  display: flex;
+  width: 25rem;
+  align-items: center;
+}
+
+.container-header {
+  display: flex;
+  background-color: #6d11a3;
+  height: 7rem;
+  gap: 100px;
+}
+
+.logout-icon:hover {
+  color: red;
+  transition: 0.2s;
+}
+
+
+.title-mundo_cartas {
+  display: flex;
+  width: 20%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.title-mundo_cartas a img {
+  width: 17rem;
+}
+
+.barra-busqueda {
+  display: flex;
+  align-items: center;
+  width: 25rem;
+}
+
+.barra-busqueda form .input-group {
+  width: 25rem;
+}
+
+main {
+  width: 100%;
+  height: 100%;
+}
+
+footer {
+  display: flex;
+  background-color: #6d11a3;
+  width: 100%;
+  height: auto;
+  gap: 25px;
+}
+
+.container-logo-mundo-cartas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15%;
+  height: 100%;
+  flex-direction: column;
+  gap: 7px;
+  margin-left: 6rem;
+  margin-top: 2rem;
+}
+.container-logo-mundo-cartas img {
+  width: 7rem;
+  border-radius: 25px;
+}
+
+.container-logo-mundo-cartas p {
+  font-size: 10px;
+}
+
+.container-informacion {
+  width: 70%;
+  height: 100%;
+  text-align: center;
+  gap: 200px;
+}
+
+.container-informacion ul {
+  display: flex;
+  width: 100%;
+  height: auto;
+  list-style: none;
+  margin-top: 30px;
+  gap: 80px;
+}
+
+.container-informacion li h2 {
+  font-size: 1.3rem;
+  font-family: "Pacifico", cursive;
+}
+
+.container-informacion li {
+  width: 20rem;
+}
+
+.container-informacion li .p {
+  font-size: 0.5rem;
+}
+
+.container-informacion li + li {
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  margin-left: 25px;
+  padding-left: 25px;
+}
+
+.container-informacion .info a {
+  display: flex;
+  text-decoration: none;
+  color: black;
+  padding-top: 10px;
+}
+
+.icon-redes a .bi-instagram,
+.bi-facebook {
+  font-size: 1.5rem;
+  color: #000;
+}
+
+.icon-redes {
+  display: flex;
+  gap: 20px;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 100px;
+  color: white;
+  font-size: 1.7rem;
+  margin-right: 2rem;
+  cursor: pointer;
+}
+
+.header-icons i {
+  transition: 0.3s ease;
+}
+
+.header-icons i:hover {
+  color: #f9d400;
+  transform: scale(1.1);
+}
+
+.Productos .bi-sliders {
+  font-size: 1.6rem;
+  color: #6d11a3;
+  margin-left: 2.5rem;
+  margin-top: 1.5rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.Productos .bi-sliders:hover {
+  color: #9b32d2;
+  transform: rotate(10deg);
+}
+
+.Productos ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 2rem 3rem;
+}
+
+.Productos li {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  text-align: center;
+  width: 200px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.Productos li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.Productos li img {
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.Productos li p {
+  font-size: 0.9rem;
+  color: #000;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.Productos li span {
+  display: inline-block;
+  background-color: #f59e0b;
+  color: white;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+@media (max-width: 992px) {
+  .container-header {
+    flex-wrap: wrap;
+    justify-content: center;
+    height: auto;
+    padding: 1.2rem;
+  }
+
+  .barra-busqueda {
+    order: 3;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .barra-busqueda .input-group {
+    width: 100%;
+  }
+
+  .header-icons {
+    order: 2;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .title-mundo_cartas {
+    order: 1;
+  }
+
+  .Productos ul {
+    gap: 25px;
+  }
+}
+
+
+
+.productos-container {
+  padding: 40px 60px;
+}
+
+.productos-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  padding: 0;
+  margin: 0;
+}
+
+
+.productos-grid .producto-card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.productos-grid .producto-card:hover {
+  transform: scale(1.03);
+}
+
+
+.productos-grid .producto-card img {
+  width: 80%;
+  height: auto;
+}
+
+
+.producto-nombre {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+}
+
+
+.producto-precio {
+  display: inline-block;
+  margin-top: 10px;
+  background: #d0831f;
+  padding: 6px 12px;
+  border-radius: 12px;
+  color: black;
+  font-weight: bold;
+  font-size: 14px;
+}

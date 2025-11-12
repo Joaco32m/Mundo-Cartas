@@ -1,7 +1,50 @@
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
+import Login from "./pages/login.jsx";
+import SignUp from "./pages/signup.jsx";
+import Carrito from "./pages/Carrito.jsx";
+import Layout from "./components/Layout";
+import AdminPanel from "./pages/users/admin/AdminPanel.jsx";
+import ProductoDetalle from "./pages/ProductoDetalle.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import { AuthProvider } from "./context/AuthContext";
+import Pago from "./pages/Pago.jsx";
+import VendedorPanel from "./pages/users/vendedor/VendedorPanel.jsx";
 
-function App() {
-  return <Home />;
+export default function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/carrito" element={<Carrito />} />
+            <Route path="/producto/:id" element={<ProductoDetalle />} />
+            <Route
+              path="/admin-panel"
+              element={
+                <ProtectedRoute roles={["Administrador"]}>
+                  <AdminPanel />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/vendedor-panel"
+              element={
+                <ProtectedRoute roles={["Vendedor", "Administrador"]}>
+                  <VendedorPanel />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route path="/Pago" element={<Pago />} />
+          </Routes>
+        </Layout>
+      </Router>
+    </AuthProvider>
+  );
 }
-
-export default App;

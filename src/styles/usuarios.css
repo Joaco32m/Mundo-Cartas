@@ -1,0 +1,71 @@
+.usuarios-container {
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.form-usuario {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.form-grid input,
+.form-grid select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.select-rol {
+  font-weight: bold;
+}
+
+.btn-agregar {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-agregar:hover {
+  background-color: #27ae60;
+}
+
+.tabla-usuarios {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-usuarios th,
+.tabla-usuarios td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.btn-editar {
+  background-color: #f1c40f;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.btn-eliminar {
+  background-color: #e74c3c;
+  border: none;
+  padding: 5px 10px;
+  color: white;
+  cursor: pointer;
+}
