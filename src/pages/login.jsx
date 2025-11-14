@@ -46,7 +46,7 @@ export default function Login() {
       }
     } catch (err) {
       console.error("Error en login:", err);
-      alert("❌ Usuario o contraseña incorrectos");
+      alert("Usuario o contraseña incorrectos");
     }
   };
 

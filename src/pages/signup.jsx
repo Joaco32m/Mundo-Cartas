@@ -15,25 +15,41 @@ const SignUp = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/registration/registro/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, email, password }),
-      });
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/registration/registro/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, email, password }),
+        }
+      );
 
-      const data = await response.json();
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
 
       if (response.ok) {
         alert("Registro exitoso, ahora puedes iniciar sesión.");
         navigate("/login");
       } else {
-        alert("Error al registrarse: " + (data.detail || JSON.stringify(data)));
+        // ==== NUEVO MANEJADOR DE ERRORES ====
+        const errorMsg =
+          data.username?.[0] ||
+          data.email?.[0] ||
+          data.password?.[0] ||
+          data.detail ||
+          "Error desconocido";
+
+        alert("Error al registrarse: " + errorMsg);
       }
     } catch (error) {
       console.error("Error de red:", error);
-      alert("Error al conectar con el servidor");
+      alert("Error al conectar con el servidor.");
     } finally {
       setLoading(false);
     }
@@ -75,8 +91,7 @@ const SignUp = () => {
             <span
               className="toggle-password"
               onClick={() => setShowPassword(!showPassword)}
-            >
-            </span>
+            ></span>
           </div>
 
           <button type="submit" disabled={loading}>

@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { AuthProvider } from "./context/AuthContext";
 import Pago from "./pages/Pago.jsx";
 import VendedorPanel from "./pages/users/vendedor/VendedorPanel.jsx";
+import SearchResults from "./pages/SearchResults.jsx";
 
 export default function App() {
   return (
@@ -19,10 +20,14 @@ export default function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
+
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
+
             <Route path="/carrito" element={<Carrito />} />
             <Route path="/producto/:id" element={<ProductoDetalle />} />
+            <Route path="/buscar" element={<SearchResults />} />
+
             <Route
               path="/admin-panel"
               element={

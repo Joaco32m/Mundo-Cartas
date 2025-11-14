@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import "../styles/home.css";
@@ -6,12 +6,21 @@ import "../styles/home.css";
 export default function Header() {
   const { isAuthenticated, logout, user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [query, setQuery] = useState("");
 
   if (isAuthenticated === null) return null;
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    if (query.trim() === "") return;
+
+    navigate(`/buscar?query=${encodeURIComponent(query)}`);
   };
 
   return (
@@ -23,13 +32,15 @@ export default function Header() {
       </div>
 
       <div className="barra-busqueda">
-        <form>
+        <form onSubmit={handleSearch}>
           <div className="input-group">
             <input
               className="form-control"
               type="search"
               placeholder="Buscar..."
               aria-label="Buscar"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
             />
             <button className="btn btn-light" type="submit">
               <i className="bi bi-search"></i>
@@ -50,11 +61,7 @@ export default function Header() {
           <>
             {user?.rol === "Administrador" && (
               <Link to="/admin-panel">
-                <i
-                  className="bi bi-gear"
-                  title="Panel de administración"
-                  style={{ cursor: "pointer" }}
-                ></i>
+                <i className="bi bi-gear" title="Panel de administración"></i>
               </Link>
             )}
 
