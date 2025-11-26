@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
-import "../../../styles/crearproductos.css";
 import api from "../../../api/axiosConfig";
+import "../../../styles/crearproductos.css";
 
-export default function CrearProducto() {
+export default function CrearProducto({ recargar }) {
   const [imagen, setImagen] = useState(null);
   const [preview, setPreview] = useState(null);
   const [producto, setProducto] = useState({
@@ -27,62 +26,64 @@ export default function CrearProducto() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!producto.nombre || !producto.precio) {
-      alert("Por favor, completa al menos el nombre y el precio.");
-      return;
+    const formData = new FormData();
+
+    Object.keys(producto).forEach((key) => {
+      formData.append(key, producto[key]);
+    });
+
+    if (imagen) {
+      formData.append("imagen", imagen);
     }
 
-    const formData = new FormData();
-    formData.append("nombre", producto.nombre);
-    formData.append("descripcion", producto.descripcion);
-    formData.append("precio", producto.precio);
-    formData.append("categoria", producto.categoria);
-    formData.append("stock", producto.stock);
-    if (imagen) formData.append("imagen", imagen);
-
     try {
-      const token = localStorage.getItem("access");
+      await api.post("productos/", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-     await api.post("productos/", formData, {
-  headers: { "Content-Type": "multipart/form-data" },
-});
+      alert("Producto creado con éxito");
 
+      if (recargar) recargar();
 
-      alert(" Producto creado con éxito");
-      window.location.href = "/";
+      setProducto({
+        nombre: "",
+        descripcion: "",
+        precio: "",
+        categoria: "",
+        stock: "",
+      });
+      setPreview(null);
+      setImagen(null);
+
     } catch (error) {
-      console.error(" Error al crear el producto:", error);
-      if (error.response) {
-        console.log("Detalles del error:", error.response.data);
-      }
-      alert("Error al crear el producto. Revisa la consola para más detalles.");
+      console.error("Error al crear el producto:", error);
+      alert("Error al crear el producto");
     }
   };
 
   return (
     <div className="crear-producto-container">
-      <h2 className="titulo-panel">Panel de Administración</h2>
-      <h3 className="subtitulo-panel">Gestión de Productos</h3>
+      <h3 className="subtitulo-panel">Crear Producto Nuevo</h3>
 
-      <form className="form-producto" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="form-producto">
         <div className="columna-izquierda">
           <label className="file-label">
-            <input type="file" onChange={handleImageChange} accept="image/*" />
+            <input type="file" accept="image/*" onChange={handleImageChange} />
             <i className="bi bi-image"></i> Subir imagen
           </label>
 
           <input
             type="text"
             name="nombre"
-            placeholder="Nombre del Producto"
+            placeholder="Nombre"
+            required
             value={producto.nombre}
             onChange={handleChange}
-            required
           />
 
           <textarea
             name="descripcion"
-            placeholder="Descripción del producto"
+            placeholder="Descripción"
             value={producto.descripcion}
             onChange={handleChange}
           />
@@ -91,9 +92,9 @@ export default function CrearProducto() {
             type="number"
             name="precio"
             placeholder="Precio"
+            required
             value={producto.precio}
             onChange={handleChange}
-            required
           />
 
           <input
@@ -107,23 +108,21 @@ export default function CrearProducto() {
           <input
             type="number"
             name="stock"
-            placeholder="Stock disponible"
+            placeholder="Stock"
             value={producto.stock}
             onChange={handleChange}
           />
 
-          <button type="submit" className="btn-agregar">
-            Agregar Nuevo Producto
-          </button>
+          <button className="btn-agregar">Agregar Producto</button>
         </div>
 
         <div className="columna-derecha">
           <p>Previsualización</p>
           <div className="preview">
             {preview ? (
-              <img src={preview} alt="Previsualización del producto" />
+              <img src={preview} alt="Preview" />
             ) : (
-              <p>No hay imagen seleccionada</p>
+              <p>No hay imagen</p>
             )}
           </div>
         </div>

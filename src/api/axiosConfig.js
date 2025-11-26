@@ -5,12 +5,53 @@ const api = axios.create({
 });
 
 
+const rutasPublicas = [
+  "productos",
+  "productos/",
+  "/productos",
+  "/productos/",
+];
+
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("access");
+
+  const metodo = config.method.toUpperCase();
+  const url = config.url.replace(/^\/+/, "");
+
+  const esPublica =
+    metodo === "GET" &&
+    rutasPublicas.some((ruta) => url.startsWith(ruta));
+
+
+  if (esPublica) {
+    delete config.headers.Authorization;
+    return config;
+  }
+
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
+
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      localStorage.removeItem("rol");
+
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default api;

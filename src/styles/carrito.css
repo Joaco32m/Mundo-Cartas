@@ -10,39 +10,71 @@
 }
 
 .tabla-carrito {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 70% 30%;
+  align-items: start;
+  gap: 20px;
 }
 
 table {
-  width: 70%;
+  width: 60%;
 }
 
 table th {
   font-size: 20px;
   border-bottom: 1px solid black;
   padding-bottom: 10px;
+  text-align: center;
 }
+
+table td {
+  vertical-align: middle;
+  text-align: center;
+  padding: 10px 5px;
+}
+
 
 .producto-info {
   display: flex;
   gap: 15px;
   align-items: center;
+  text-align: left;
+  width: 250px;
 }
 
 .producto-info img {
-  width: 70px;
+  width: 100px;
   height: auto;
 }
 
-.input-cantidad {
-  width: 60px;
-  text-align: center;
-  border-radius: 8px;
+
+.cantidad-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
+
+.cantidad-control button {
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+.cantidad-control input[type="number"] {
+  width: 45px;
+  text-align: center;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+
 .resumen-carrito {
-  width: 20%;
+  width: 20rem;
   border: 1px solid #333;
   padding: 20px;
   border-radius: 10px;
@@ -74,24 +106,3 @@ button a {
   color: white;
   text-decoration: none;
 }
-
-.cantidad-control {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 7rem;
-}
-
-.cantidad-control button {
-  width: 30px;
-  height: 30px;
-  font-size: 18px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.tabla-carrito tbody tr td img {
-  width: 100px;
-}
-
-

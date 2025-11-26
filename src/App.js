@@ -12,6 +12,9 @@ import { AuthProvider } from "./context/AuthContext";
 import Pago from "./pages/Pago.jsx";
 import VendedorPanel from "./pages/users/vendedor/VendedorPanel.jsx";
 import SearchResults from "./pages/SearchResults.jsx";
+import PagoExitoso from "./pages/PagoExitoso";
+import PagoFallido from "./pages/PagoFallido";
+
 
 export default function App() {
   return (
@@ -20,10 +23,10 @@ export default function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
-
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
-
+            <Route path="/pago-exitoso" element={<PagoExitoso />} />
+            <Route path="/pago-fallido" element={<PagoFallido />} />
             <Route path="/carrito" element={<Carrito />} />
             <Route path="/producto/:id" element={<ProductoDetalle />} />
             <Route path="/buscar" element={<SearchResults />} />
@@ -45,7 +48,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-
             <Route path="/Pago" element={<Pago />} />
           </Routes>
         </Layout>

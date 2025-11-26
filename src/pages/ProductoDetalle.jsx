@@ -56,7 +56,7 @@ export default function ProductoDetalle() {
     <div className="producto-detalle-container">
       <div className="producto-detalle-img">
         <img
-          src={product.imagen || "/img/img-ejemplo.jpg"}
+          src={`http://127.0.0.1:8000${product.imagen}`}
           alt={product.nombre}
         />
       </div>

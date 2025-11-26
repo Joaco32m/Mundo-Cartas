@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import api from "../../../api/axiosConfig";
 
 function PedidoDetalleModal({ pedido, onClose }) {
   if (!pedido) return null;
@@ -14,11 +15,21 @@ function PedidoDetalleModal({ pedido, onClose }) {
         </header>
 
         <div className="modal-body">
-          <p><strong>Cliente:</strong> {pedido.cliente}</p>
-          <p><strong>Dirección:</strong> {pedido.direccion}</p>
-          <p><strong>Método de pago:</strong> {pedido.metodoPago}</p>
-          <p><strong>Estado:</strong> {pedido.estado}</p>
-          <p><strong>Fecha:</strong> {pedido.fecha}</p>
+          <p>
+            <strong>Cliente:</strong> {pedido.cliente}
+          </p>
+          <p>
+            <strong>Dirección:</strong> {pedido.direccion}
+          </p>
+          <p>
+            <strong>Método de pago:</strong> {pedido.metodo_pago}
+          </p>
+          <p>
+            <strong>Estado:</strong> {pedido.estado}
+          </p>
+          <p>
+            <strong>Fecha:</strong> {pedido.fecha}
+          </p>
 
           <h4>Productos</h4>
           <table className="detalle-table">
@@ -30,13 +41,16 @@ function PedidoDetalleModal({ pedido, onClose }) {
                 <th>Subtotal</th>
               </tr>
             </thead>
+
             <tbody>
               {pedido.productos.map((prod, idx) => (
                 <tr key={idx}>
                   <td>{prod.nombre}</td>
                   <td>{prod.cantidad}</td>
                   <td>${prod.precio.toLocaleString("es-CL")}</td>
-                  <td>${(prod.precio * prod.cantidad).toLocaleString("es-CL")}</td>
+                  <td>
+                    ${(prod.cantidad * prod.precio).toLocaleString("es-CL")}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -48,14 +62,16 @@ function PedidoDetalleModal({ pedido, onClose }) {
         </div>
 
         <footer className="modal-footer">
-          <button className="btn-secondary" onClick={onClose}>Cerrar</button>
+          <button className="btn-secondary" onClick={onClose}>
+            Cerrar
+          </button>
         </footer>
       </div>
     </div>
   );
 }
 
-export default function Pedidos({ pedidos = [], refreshPedidos }) {
+export default function Pedidos({ pedidos = [] }) {
   const [selected, setSelected] = useState(null);
 
   return (
@@ -74,20 +90,32 @@ export default function Pedidos({ pedidos = [], refreshPedidos }) {
               <th>Acciones</th>
             </tr>
           </thead>
+
           <tbody>
             {pedidos.map((p) => (
               <tr key={p.id}>
                 <td>{p.id}</td>
                 <td>{p.cliente}</td>
                 <td>${p.total.toLocaleString("es-CL")}</td>
-                <td>{p.metodoPago}</td>
+                <td>{p.metodo_pago}</td>
+
                 <td>
-                  <span className={p.estado === "Entregado" ? "chip delivered" : "chip pending"}>
+                  <span
+                    className={
+                      p.estado === "Entregado"
+                        ? "chip delivered"
+                        : "chip pending"
+                    }
+                  >
                     {p.estado}
                   </span>
                 </td>
+
                 <td>
-                  <button className="btn-primary small" onClick={() => setSelected(p)}>
+                  <button
+                    className="btn-primary small"
+                    onClick={() => setSelected(p)}
+                  >
                     Ver detalle
                   </button>
                 </td>
@@ -96,7 +124,7 @@ export default function Pedidos({ pedidos = [], refreshPedidos }) {
 
             {pedidos.length === 0 && (
               <tr>
-                <td colSpan="7" style={{ textAlign: "center", padding: "1rem" }}>
+                <td colSpan="7" className="text-center">
                   No hay pedidos para mostrar.
                 </td>
               </tr>
@@ -106,7 +134,10 @@ export default function Pedidos({ pedidos = [], refreshPedidos }) {
       </div>
 
       {selected && (
-        <PedidoDetalleModal pedido={selected} onClose={() => setSelected(null)} />
+        <PedidoDetalleModal
+          pedido={selected}
+          onClose={() => setSelected(null)}
+        />
       )}
     </div>
   );

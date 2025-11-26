@@ -1,4 +1,3 @@
-
 html, body {
   height: 100%;
   margin: 0;
@@ -10,11 +9,9 @@ html, body {
   min-height: 100vh;
 }
 
-
 main {
   flex: 1;
 }
-
 
 .container-header {
   display: flex;
@@ -30,6 +27,7 @@ main {
   justify-content: center;
   align-items: center;
 }
+
 .logo-mundo_cartas a img {
   width: 17rem;
 }
@@ -52,7 +50,6 @@ main {
   transition: 0.2s;
 }
 
-
 .title-mundo_cartas {
   display: flex;
   width: 20%;
@@ -60,6 +57,7 @@ main {
   justify-content: center;
   align-items: center;
 }
+
 .title-mundo_cartas a img {
   width: 17rem;
 }
@@ -98,6 +96,7 @@ footer {
   margin-left: 6rem;
   margin-top: 2rem;
 }
+
 .container-logo-mundo-cartas img {
   width: 7rem;
   border-radius: 25px;
@@ -162,7 +161,6 @@ footer {
   justify-content: center;
   align-items: center;
 }
-
 
 .header-icons {
   display: flex;
@@ -282,6 +280,9 @@ footer {
 }
 
 
+/* ---------------------------------------------------
+   SECCIÓN DE PRODUCTOS
+--------------------------------------------------- */
 
 .productos-container {
   padding: 40px 60px;
@@ -296,7 +297,6 @@ footer {
   margin: 0;
 }
 
-
 .productos-grid .producto-card {
   background: white;
   padding: 20px;
@@ -310,12 +310,10 @@ footer {
   transform: scale(1.03);
 }
 
-
 .productos-grid .producto-card img {
   width: 80%;
   height: auto;
 }
-
 
 .producto-nombre {
   margin-top: 20px;
@@ -324,8 +322,9 @@ footer {
   color: #000;
 }
 
-
-.producto-precio {
+/* 🔥 Precio ahora BOTÓN REAL */
+.producto-precio,
+.btn-precio {
   display: inline-block;
   margin-top: 10px;
   background: #d0831f;
@@ -334,4 +333,15 @@ footer {
   color: black;
   font-weight: bold;
   font-size: 14px;
+
+  /* estilo de botón */
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: 0.2s ease;
+}
+
+.btn-precio:hover {
+  transform: scale(1.05);
+  background: #b87419;
 }

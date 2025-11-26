@@ -1,0 +1,61 @@
+.estado-container {
+  width: 100%;
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f7f4fb;
+  padding: 40px;
+}
+
+.estado-box {
+  background: white;
+  padding: 40px 60px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  text-align: center;
+  width: 420px;
+  animation: fadeIn 0.5s ease;
+}
+
+.estado-box h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.estado-box p {
+  font-size: 1rem;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.btn-volver {
+  display: inline-block;
+  padding: 12px 25px;
+  border-radius: 10px;
+  background: #6d11a3;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.25s ease;
+}
+
+.btn-volver:hover {
+  background: #8f38c9;
+  transform: scale(1.03);
+}
+
+/* Cambios por estado */
+.exito .estado-box h1 {
+  color: #1ea31e;
+}
+
+.fallido .estado-box h1 {
+  color: #c91a1a;
+}
+
+/* Animación suave al cargar */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

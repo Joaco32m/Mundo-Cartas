@@ -1,45 +1,34 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axiosConfig";
 import "../styles/home.css";
 import "../styles/normalize.css";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
 
-  const API = "http://127.0.0.1:8000/api/carrito/add/";
-  const token = localStorage.getItem("access");
-
-  const axiosConfig = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
+  async function cargarProductos() {
+    try {
+      const res = await api.get("productos/");
+      setProducts(res.data);
+    } catch (err) {
+      console.error("Error cargando productos:", err);
+    }
+  }
 
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/api/productos/")
-      .then((response) => setProducts(response.data))
-      .catch((error) => console.error("Error al cargar los productos:", error));
+    cargarProductos();
   }, []);
 
-  const agregarAlCarrito = async (prodId) => {
-    if (!token) {
-      window.location.href = "/login";
-      return;
-    }
-
+  const agregarAlCarrito = async (id) => {
     try {
-      await axios.post(
-        API,
-        { producto_id: prodId, cantidad: 1 },
-        axiosConfig
-      );
-
+      await api.post("carrito/add/", {
+        producto_id: id,
+        cantidad: 1,
+      });
       alert("Producto agregado al carrito 👍");
     } catch (err) {
-      console.error("Error al agregar al carrito:", err);
-      alert("No se pudo agregar al carrito.");
+      alert("Debes iniciar sesión");
+      window.location.href = "/login";
     }
   };
 
@@ -47,24 +36,18 @@ export default function Home() {
     <section className="productos-container">
       <ul className="productos-grid">
         {products.map((prod) => (
-          <li className="producto-card" key={prod.id}>
+          <li key={prod.id} className="producto-card">
             <a href={`/producto/${prod.id}/`} className="product-link">
-              {prod.imagen ? (
-                <img src={prod.imagen} alt={prod.nombre} />
-              ) : (
-                <img src="/img/img-ejemplo.jpg" alt="Sin imagen" />
-              )}
-
+              <img src={`http://127.0.0.1:8000${prod.imagen}`} alt={prod.nombre} />
               <h3 className="producto-nombre">{prod.nombre}</h3>
             </a>
 
-            <span
-              className="producto-precio"
+            <button
+              className="producto-precio btn-precio"
               onClick={() => agregarAlCarrito(prod.id)}
-              style={{ cursor: "pointer" }}
             >
-              ${parseInt(prod.precio).toLocaleString()} CLP
-            </span>
+              ${prod.precio.toLocaleString("es-CL")} CLP
+            </button>
           </li>
         ))}
       </ul>

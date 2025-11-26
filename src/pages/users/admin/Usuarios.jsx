@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../../api/axiosConfig";
 import "../../../styles/usuarios.css";
 
 export default function Usuarios() {
@@ -15,17 +15,16 @@ export default function Usuarios() {
 
   const [editando, setEditando] = useState(null);
 
- 
   useEffect(() => {
     obtenerUsuarios();
   }, []);
 
   const obtenerUsuarios = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/usuarios/");
+      const res = await api.get("usuarios/");
       setUsuarios(res.data);
     } catch (error) {
-      console.error("Error al obtener usuarios:", error);
+      console.error("Error:", error);
     }
   };
 
@@ -33,20 +32,17 @@ export default function Usuarios() {
     setNuevoUsuario({ ...nuevoUsuario, [e.target.name]: e.target.value });
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (editando) {
-        await axios.put(
-          `http://127.0.0.1:8000/api/usuarios/${editando}/`,
-          nuevoUsuario
-        );
-        alert("Usuario actualizado correctamente");
+        await api.put(`usuarios/${editando}/`, nuevoUsuario);
+        alert("Usuario actualizado");
       } else {
-        await axios.post("http://127.0.0.1:8000/api/usuarios/", nuevoUsuario);
-        alert(" Usuario creado correctamente");
+        await api.post("usuarios/", nuevoUsuario);
+        alert("Usuario creado");
       }
+
       setNuevoUsuario({
         username: "",
         email: "",
@@ -55,25 +51,25 @@ export default function Usuarios() {
         password: "",
         rol: "cliente",
       });
+
       setEditando(null);
       obtenerUsuarios();
     } catch (error) {
-      console.error(" Error al guardar usuario:", error);
+      console.error("Error al guardar usuario:", error);
     }
   };
 
-  
   const eliminarUsuario = async (id) => {
     if (!window.confirm("¿Seguro que deseas eliminar este usuario?")) return;
+
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/usuarios/${id}/`);
-      alert(" Usuario eliminado correctamente");
+      await api.delete(`usuarios/${id}/`);
+      alert("Usuario eliminado");
       obtenerUsuarios();
     } catch (error) {
-      console.error("Error al eliminar usuario:", error);
+      console.error("Error:", error);
     }
   };
-
 
   const editarUsuario = (usuario) => {
     setEditando(usuario.id);
@@ -96,7 +92,7 @@ export default function Usuarios() {
           <input
             type="text"
             name="username"
-            placeholder="Nombre de Usuario"
+            placeholder="Usuario"
             value={nuevoUsuario.username}
             onChange={handleChange}
             required
@@ -127,23 +123,18 @@ export default function Usuarios() {
             type="password"
             name="password"
             placeholder="Contraseña"
-            value={nuevoUsuario.password}
-            onChange={handleChange}
             required={!editando}
-          />
-          <select
-            name="rol"
-            value={nuevoUsuario.rol}
             onChange={handleChange}
-            className="select-rol"
-          >
+          />
+          <select name="rol" value={nuevoUsuario.rol} onChange={handleChange}>
             <option value="admin">Administrador</option>
             <option value="vendedor">Vendedor</option>
+            <option value="cliente">Cliente</option>
           </select>
         </div>
 
-        <button type="submit" className="btn-agregar">
-          {editando ? "Actualizar Usuario" : "Agregar Nuevo Usuario"}
+        <button className="btn-agregar">
+          {editando ? "Actualizar Usuario" : "Agregar Usuario"}
         </button>
       </form>
 
@@ -158,6 +149,7 @@ export default function Usuarios() {
             <th>Acciones</th>
           </tr>
         </thead>
+
         <tbody>
           {usuarios.map((user) => (
             <tr key={user.id}>
@@ -166,18 +158,19 @@ export default function Usuarios() {
               <td>{user.rut}</td>
               <td>{user.telefono}</td>
               <td>{user.rol}</td>
+
               <td>
                 <button
                   className="btn-editar"
                   onClick={() => editarUsuario(user)}
                 >
-                   Editar
+                  Editar
                 </button>
                 <button
                   className="btn-eliminar"
                   onClick={() => eliminarUsuario(user.id)}
                 >
-                 Eliminar
+                  Eliminar
                 </button>
               </td>
             </tr>

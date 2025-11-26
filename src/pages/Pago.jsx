@@ -1,7 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/pago.css";
+import api from "../api/axiosConfig";
 
 export default function Pago() {
+  const [subtotal, setSubtotal] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [cantidad, setCantidad] = useState(0);
+  const [metodo, setMetodo] = useState(""); 
+
+ 
+  useEffect(() => {
+    api.get("/carrito/")
+      .then((res) => {
+        setSubtotal(res.data.total);
+        setTotal(res.data.total);
+        setCantidad(res.data.items.length);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+
+  const continuarPago = async () => {
+    if (metodo !== "webpay") {
+      alert("Selecciona un método de pago válido");
+      return;
+    }
+
+    try {
+      const resp = await api.post("pagos/webpay/init/");
+      const { url, token } = resp.data;
+
+      window.location.href = `${url}?token_ws=${token}`;
+    } catch (error) {
+      console.error(error);
+      alert("Error al iniciar el pago");
+    }
+  };
+
   return (
     <div className="pago-container">
 
@@ -9,42 +44,13 @@ export default function Pago() {
         <h2 className="titulo-metodo">METODO DE PAGO</h2>
 
         <div className="metodo-opcion">
-            <input type="radio" name="metodo" />
-
-            <i class="bi bi-credit-card"></i>
-
-            <span>Debito / Crédito</span>
-        </div>
-
-
-        <hr />
-
-        <div className="metodo-opcion">
-            <input type="radio" name="metodo" />
-
-            <i class="bi bi-shop"></i>
-
-            <span>Paga con Mercado Pago</span>
-        </div>
-
-        <hr />
-
-        <div className="metodo-opcion">
-            <input type="radio" name="metodo" />
-
-            <i class="bi bi-wallet"></i>
-
-            <span>WebPay</span>
-        </div>
-
-        <hr />
-
-        <div className="metodo-opcion">
-            <input type="radio" name="metodo" />
-
-            <i class="bi bi-cash-coin"></i>
-
-            <span>Transbank</span>
+          <input
+            type="radio"
+            name="metodo"
+            onChange={() => setMetodo("webpay")}
+          />
+          <i className="bi bi-wallet"></i>
+          <span>WebPay</span>
         </div>
 
         <hr />
@@ -61,20 +67,23 @@ export default function Pago() {
 
           <div className="resumen-row">
             <span>Subtotal</span>
-            <span>$5.323</span>
+            <span>${subtotal.toLocaleString("es-CL")}</span>
           </div>
 
           <hr />
 
           <div className="resumen-row">
             <strong>Total</strong>
-            <strong>$5.323</strong>
+            <strong>${total.toLocaleString("es-CL")}</strong>
           </div>
 
           <hr />
 
-          <p className="cantidad-texto">Cantidad: 1</p>
-          <p className="valor-texto">$5.323</p>
+          <p className="cantidad-texto">Cantidad: {cantidad}</p>
+
+          <button className="btn-pago" onClick={continuarPago}>
+            Continuar al pago
+          </button>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axiosConfig";
 
 export const AuthContext = createContext();
 
@@ -9,31 +9,23 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("access");
-    if (token) {
-      axios
-        .get("http://127.0.0.1:8000/api/usuarios/me/", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((res) => {
-          setUser(res.data);
-          setIsAuthenticated(true);
-        })
-        .catch(() => {
-          setUser(null);
-          setIsAuthenticated(false);
-        });
-    }
+    if (token) cargarUsuario();
   }, []);
 
-  const login = (token) => {
-    localStorage.setItem("access", token);
+  const cargarUsuario = async () => {
+    try {
+      const res = await api.get("usuarios/me/");
+      setUser(res.data);
+      setIsAuthenticated(true);
+    } catch (err) {
+      setUser(null);
+      setIsAuthenticated(false);
+    }
+  };
+
+  const login = async () => {
     setIsAuthenticated(true);
-    axios
-      .get("http://127.0.0.1:8000/api/usuarios/me/", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setUser(res.data))
-      .catch(() => setUser(null));
+    await cargarUsuario();
   };
 
   const logout = () => {
@@ -44,7 +36,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

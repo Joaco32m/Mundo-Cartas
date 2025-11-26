@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import "../../../styles/adminpanel.css";
 import Productos from "./Productos";
 import Reportes from "./Reportes";
 import Usuarios from "./Usuarios";
+import "../../../styles/adminpanel.css";
 
 export default function AdminPanel() {
   const [activeSection, setActiveSection] = useState("productos");
@@ -18,12 +18,14 @@ export default function AdminPanel() {
         >
           Gestión de Productos
         </button>
+
         <button
           className={activeSection === "reportes" ? "active" : ""}
           onClick={() => setActiveSection("reportes")}
         >
           Reportes de Venta
         </button>
+
         <button
           className={activeSection === "usuarios" ? "active" : ""}
           onClick={() => setActiveSection("usuarios")}
