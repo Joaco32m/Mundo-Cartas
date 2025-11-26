@@ -10,7 +10,7 @@ export default function Usuarios() {
     rut: "",
     telefono: "",
     password: "",
-    rol: "cliente",
+    rol: "Administrador",
   });
 
   const [editando, setEditando] = useState(null);
@@ -24,7 +24,7 @@ export default function Usuarios() {
       const res = await api.get("usuarios/");
       setUsuarios(res.data);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error cargando usuarios:", error);
     }
   };
 
@@ -49,7 +49,7 @@ export default function Usuarios() {
         rut: "",
         telefono: "",
         password: "",
-        rol: "cliente",
+        rol: "Administrador",
       });
 
       setEditando(null);
@@ -76,8 +76,8 @@ export default function Usuarios() {
     setNuevoUsuario({
       username: usuario.username,
       email: usuario.email,
-      rut: usuario.rut,
-      telefono: usuario.telefono,
+      rut: usuario.rut || "",
+      telefono: usuario.telefono || "",
       password: "",
       rol: usuario.rol,
     });
@@ -97,6 +97,7 @@ export default function Usuarios() {
             onChange={handleChange}
             required
           />
+
           <input
             type="email"
             name="email"
@@ -105,6 +106,7 @@ export default function Usuarios() {
             onChange={handleChange}
             required
           />
+
           <input
             type="text"
             name="rut"
@@ -112,6 +114,7 @@ export default function Usuarios() {
             value={nuevoUsuario.rut}
             onChange={handleChange}
           />
+
           <input
             type="text"
             name="telefono"
@@ -119,6 +122,7 @@ export default function Usuarios() {
             value={nuevoUsuario.telefono}
             onChange={handleChange}
           />
+
           <input
             type="password"
             name="password"
@@ -126,10 +130,10 @@ export default function Usuarios() {
             required={!editando}
             onChange={handleChange}
           />
+
           <select name="rol" value={nuevoUsuario.rol} onChange={handleChange}>
-            <option value="admin">Administrador</option>
-            <option value="vendedor">Vendedor</option>
-            <option value="cliente">Cliente</option>
+            <option value="Administrador">Administrador</option>
+            <option value="Vendedor">Vendedor</option>
           </select>
         </div>
 
@@ -155,8 +159,8 @@ export default function Usuarios() {
             <tr key={user.id}>
               <td>{user.username}</td>
               <td>{user.email}</td>
-              <td>{user.rut}</td>
-              <td>{user.telefono}</td>
+              <td>{user.rut || "—"}</td>
+              <td>{user.telefono || "—"}</td>
               <td>{user.rol}</td>
 
               <td>

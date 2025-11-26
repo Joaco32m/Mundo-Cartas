@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import "../styles/carrito.css";
-import { Link } from "react-router-dom";
+import { showToast } from "../utils/toast";
 
 export default function Carrito() {
   const [carrito, setCarrito] = useState(null);
@@ -9,7 +9,7 @@ export default function Carrito() {
 
   async function cargarCarrito() {
     try {
-      const res = await api.get("carrito/");
+      const res = await api.get("carrito/?t=" + Date.now());
       setCarrito(res.data);
     } catch (err) {
       console.error("Error cargando carrito:", err);
@@ -26,7 +26,7 @@ export default function Carrito() {
       await api.post(`carrito/item/${id}/increment/`);
       cargarCarrito();
     } catch (err) {
-      alert(err.response?.data?.detail || "Error desconocido");
+      showToast(err.response?.data?.detail || "Stock insuficiente", "warning");
     }
   };
 
@@ -50,9 +50,9 @@ export default function Carrito() {
     return (
       <main className="carrito-container">
         <h2>Carrito vacío</h2>
-        <Link to="/" className="seguir-comprando">
+        <a href="/" className="seguir-comprando">
           Seguir Comprando
-        </Link>
+        </a>
       </main>
     );
 
@@ -73,36 +73,52 @@ export default function Carrito() {
           </thead>
 
           <tbody>
-            {carrito.items.map((item) => (
-              <tr>
-                <td className="producto-info">
-                  <img
-                    src={`http://127.0.0.1:8000${item.producto.imagen}`}
-                    alt=""
-                  />
-                  <span>{item.producto.nombre}</span>
-                </td>
+            {carrito.items.map((item) => {
+              const stockMax = item.producto.stock;
+              const cantidad = item.cantidad;
 
-                <td>${item.precio_unitario.toLocaleString("es-CL")}</td>
+              return (
+                <tr key={item.id}>
+                  <td className="producto-info">
+                    <img
+                        src={`http://127.0.0.1:8000${item.producto.imagen}`}
+                        alt={item.producto.nombre}
+                      />
+                  </td>
 
-                <td>
-                  <div className="cantidad-control">
-                    <button onClick={() => decrementar(item.id)}>-</button>
-                    <input readOnly value={item.cantidad} />
-                    <button onClick={() => incrementar(item.id)}>+</button>
-                  </div>
-                </td>
+                  <td>${item.precio_unitario.toLocaleString("es-CL")}</td>
 
-                <td>${item.subtotal.toLocaleString("es-CL")}</td>
+                  <td>
+                    <div className="cantidad-control">
+                      <button onClick={() => decrementar(item.id)}>-</button>
 
-                <td>
-                  <i
-                    className="bi bi-trash"
-                    onClick={() => eliminarItem(item.id)}
-                  ></i>
-                </td>
-              </tr>
-            ))}
+                      <input readOnly value={cantidad} />
+
+                      <button
+                        onClick={() => incrementar(item.id)}
+                        disabled={cantidad >= stockMax}
+                        className={cantidad >= stockMax ? "btn-disabled" : ""}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    {cantidad >= stockMax && (
+                      <p className="stock-msg">Máximo disponible</p>
+                    )}
+                  </td>
+
+                  <td>${item.subtotal.toLocaleString("es-CL")}</td>
+
+                  <td>
+                    <i
+                      className="bi bi-trash"
+                      onClick={() => eliminarItem(item.id)}
+                    ></i>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
 
@@ -117,13 +133,19 @@ export default function Carrito() {
 
           <hr />
 
-          <Link to="/Pago">
-            <button className="btn btn-primary btn-pago">Continuar Pago</button>
-          </Link>
+          <button
+            className="btn btn-primary btn-pago"
+            onClick={async () => {
+              await cargarCarrito();
+              window.location.href = "/Pago";
+            }}
+          >
+            Continuar Pago
+          </button>
 
-          <Link to="/" className="seguir-comprando">
+          <a href="/" className="seguir-comprando">
             Seguir Comprando
-          </Link>
+          </a>
         </div>
       </div>
     </main>

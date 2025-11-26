@@ -15,6 +15,7 @@
   margin-bottom: 2rem;
 }
 
+/* Botón agregar */
 .btn-agregar {
   background-color: #2ecc40;
   color: black;
@@ -24,6 +25,7 @@
   border-radius: 5px;
   margin-bottom: 20px;
   float: right;
+  transition: 0.2s;
 }
 
 .btn-agregar:hover {
@@ -31,28 +33,33 @@
   cursor: pointer;
 }
 
+/* Contenedor principal */
 .form-producto {
   display: flex;
   gap: 50px;
   border: 1px solid #999;
   padding: 30px;
+  border-radius: 10px;
+  background: #fafafa;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
+/* Columnas */
 .columna-izquierda {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: 50%;
+  width: 55%;
 }
 
 .columna-derecha {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
   width: 40%;
 }
 
+/* Input archivo */
 .file-label {
   display: flex;
   align-items: center;
@@ -61,30 +68,38 @@
   border-radius: 5px;
   padding: 10px;
   cursor: pointer;
+  background: white;
+  transition: 0.2s;
+}
+
+.file-label:hover {
+  background: #f2f2f2;
 }
 
 .file-label input {
   display: none;
 }
 
+/* Inputs y textarea */
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #bbb;
   font-size: 14px;
+  background: white;
 }
 
-textarea {
-  height: 70px;
-  resize: none;
+/* Para integrarse con bootstrap mejor */
+input.form-control,
+textarea.form-control,
+select.form-select {
+  border-radius: 6px;
 }
 
-input[placeholder="Stock"] {
-  background-color: #eee;
-}
-
+/* Área de preview */
 .preview {
   background-color: #ddd;
   width: 250px;
@@ -92,6 +107,7 @@ input[placeholder="Stock"] {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 5px;
 }
 
 .preview img {

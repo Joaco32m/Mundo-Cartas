@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../../../api/axiosConfig";
 import "../../../styles/crearproductos.css";
+import { showToast } from "../../../utils/toast";
 
 export default function CrearProducto({ recargar }) {
   const [imagen, setImagen] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [categorias, setCategorias] = useState([]);
+
   const [producto, setProducto] = useState({
     nombre: "",
     descripcion: "",
@@ -13,6 +16,17 @@ export default function CrearProducto({ recargar }) {
     stock: "",
   });
 
+
+  useEffect(() => {
+    api
+      .get("categorias/")
+      .then((res) => setCategorias(res.data))
+      .catch((err) => {
+        console.error("Error cargando categorías:", err);
+        showToast("Error al cargar categorías", "danger");
+      });
+  }, []);
+
   const handleChange = (e) => {
     setProducto({ ...producto, [e.target.name]: e.target.value });
   };
@@ -20,14 +34,13 @@ export default function CrearProducto({ recargar }) {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImagen(file);
-    setPreview(URL.createObjectURL(file));
+    setPreview(file ? URL.createObjectURL(file) : null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-
     Object.keys(producto).forEach((key) => {
       formData.append(key, producto[key]);
     });
@@ -41,7 +54,8 @@ export default function CrearProducto({ recargar }) {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert("Producto creado con éxito");
+
+      showToast("Producto creado con éxito ✔", "success");
 
       if (recargar) recargar();
 
@@ -54,10 +68,16 @@ export default function CrearProducto({ recargar }) {
       });
       setPreview(null);
       setImagen(null);
-
     } catch (error) {
       console.error("Error al crear el producto:", error);
-      alert("Error al crear el producto");
+
+      const msgBackend =
+        error.response?.data?.detail ||
+        error.response?.data?.error ||
+        "Error al crear el producto";
+
+
+      showToast(msgBackend, "danger");
     }
   };
 
@@ -67,6 +87,7 @@ export default function CrearProducto({ recargar }) {
 
       <form onSubmit={handleSubmit} className="form-producto">
         <div className="columna-izquierda">
+
           <label className="file-label">
             <input type="file" accept="image/*" onChange={handleImageChange} />
             <i className="bi bi-image"></i> Subir imagen
@@ -74,6 +95,7 @@ export default function CrearProducto({ recargar }) {
 
           <input
             type="text"
+            className="form-control"
             name="nombre"
             placeholder="Nombre"
             required
@@ -82,6 +104,7 @@ export default function CrearProducto({ recargar }) {
           />
 
           <textarea
+            className="form-control"
             name="descripcion"
             placeholder="Descripción"
             value={producto.descripcion}
@@ -90,6 +113,7 @@ export default function CrearProducto({ recargar }) {
 
           <input
             type="number"
+            className="form-control"
             name="precio"
             placeholder="Precio"
             required
@@ -97,33 +121,40 @@ export default function CrearProducto({ recargar }) {
             onChange={handleChange}
           />
 
-          <input
-            type="text"
+          <select
             name="categoria"
-            placeholder="Categoría"
+            className="form-select"
             value={producto.categoria}
             onChange={handleChange}
-          />
+            required
+          >
+            <option value="">Seleccione categoría...</option>
+            {categorias.map((cat) => (
+              <option key={cat.id} value={cat.nombre}>
+                {cat.nombre}
+              </option>
+            ))}
+          </select>
 
           <input
             type="number"
+            className="form-control"
             name="stock"
             placeholder="Stock"
             value={producto.stock}
             onChange={handleChange}
           />
 
-          <button className="btn-agregar">Agregar Producto</button>
+          <button className="btn-agregar" type="submit">
+            Agregar Producto
+          </button>
         </div>
 
         <div className="columna-derecha">
           <p>Previsualización</p>
-          <div className="preview">
-            {preview ? (
-              <img src={preview} alt="Preview" />
-            ) : (
-              <p>No hay imagen</p>
-            )}
+
+          <div className="preview shadow-sm">
+            {preview ? <img src={preview} alt="Preview" /> : <p>No hay imagen</p>}
           </div>
         </div>
       </form>

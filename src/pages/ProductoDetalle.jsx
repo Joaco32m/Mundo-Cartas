@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import "../styles/productodetalle.css";
+import { showToast } from "../utils/toast";
 
 export default function ProductoDetalle() {
   const { id } = useParams();
@@ -16,35 +17,42 @@ export default function ProductoDetalle() {
     },
   };
 
-
   useEffect(() => {
     axios
       .get(`http://127.0.0.1:8000/api/productos/${id}/`)
-      .then((res) => setProduct(res.data))
-      .catch((err) => console.error("Error al cargar el producto:", err));
+      .then((res) => {
+        setProduct(res.data);
+
+        if (res.data.stock === 0) setQty(0);
+      })
+      .catch((err) => {
+        console.error("Error al cargar producto:", err);
+        showToast("Error al cargar producto", "danger");
+      });
   }, [id]);
 
- 
   const agregarAlCarrito = async () => {
     if (!token) {
-      alert("Debes iniciar sesión para agregar productos al carrito.");
+      showToast("Debes iniciar sesión para agregar productos", "warning");
       return;
     }
 
     try {
-      await axios.post(
+      const resp = await axios.post(
         "http://127.0.0.1:8000/api/carrito/add/",
-        {
-          producto_id: id,
-          cantidad: qty,
-        },
+        { producto_id: id, cantidad: qty },
         axiosConfig
       );
 
-      alert("Producto agregado al carrito ✔");
+      if (!resp.data.ok) {
+        showToast(resp.data.detail, "warning");
+        return;
+      }
+
+      showToast("Producto agregado al carrito ✔", "success");
     } catch (err) {
-      console.error("Error al agregar al carrito:", err);
-      alert("Error al agregar producto al carrito");
+      const errorMsg = err.response?.data?.detail;
+      showToast(errorMsg || "Stock insuficiente", "warning");
     }
   };
 
@@ -52,11 +60,13 @@ export default function ProductoDetalle() {
     return <p className="cargando">Cargando producto...</p>;
   }
 
+  const stock = product.stock;
+
   return (
     <div className="producto-detalle-container">
       <div className="producto-detalle-img">
         <img
-          src={`http://127.0.0.1:8000${product.imagen}`}
+          src={product.imagen}
           alt={product.nombre}
         />
       </div>
@@ -69,18 +79,41 @@ export default function ProductoDetalle() {
         </p>
 
         <div className="cantidad-add">
-          <button onClick={() => setQty((q) => (q > 1 ? q - 1 : 1))}>-</button>
+          <button
+            onClick={() => setQty((q) => (q > 1 ? q - 1 : 1))}
+            disabled={stock === 0}
+          >
+            -
+          </button>
 
           <input
-            type="text"
+            type="number"
+            min="1"
+            max={stock}
             value={qty}
-            onChange={(e) => setQty(Number(e.target.value))}
+            onChange={(e) => {
+              const val = Number(e.target.value);
+
+              if (val < 1) setQty(1);
+              else if (val > stock) setQty(stock);
+              else setQty(val);
+            }}
+            disabled={stock === 0}
           />
 
-          <button onClick={() => setQty((q) => q + 1)}>+</button>
+          <button
+            onClick={() => setQty((q) => (q < stock ? q + 1 : stock))}
+            disabled={stock === 0}
+          >
+            +
+          </button>
 
-          <button className="btn-agregar" onClick={agregarAlCarrito}>
-            Agregar
+          <button
+            className="btn-agregar"
+            onClick={agregarAlCarrito}
+            disabled={stock === 0}
+          >
+            {stock === 0 ? "Sin stock" : "Agregar"}
           </button>
         </div>
 
@@ -97,7 +130,7 @@ export default function ProductoDetalle() {
             <strong>Categoría:</strong> {product.categoria || "No especificada"}
           </li>
           <li>
-            <strong>Stock:</strong> {product.stock || "No disponible"}
+            <strong>Stock:</strong> {stock > 0 ? stock : "Agotado"}
           </li>
         </ul>
       </div>

@@ -280,10 +280,6 @@ footer {
 }
 
 
-/* ---------------------------------------------------
-   SECCIÓN DE PRODUCTOS
---------------------------------------------------- */
-
 .productos-container {
   padding: 40px 60px;
 }
@@ -297,6 +293,7 @@ footer {
   margin: 0;
 }
 
+
 .productos-grid .producto-card {
   background: white;
   padding: 20px;
@@ -304,15 +301,17 @@ footer {
   text-align: center;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   transition: transform 0.2s ease;
-}
 
-.productos-grid .producto-card:hover {
-  transform: scale(1.03);
+  height: 370px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .productos-grid .producto-card img {
   width: 80%;
-  height: auto;
+  height: 200px;
+  object-fit: contain;
 }
 
 .producto-nombre {
@@ -320,9 +319,13 @@ footer {
   font-size: 16px;
   font-weight: bold;
   color: #000;
+  
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 🔥 Precio ahora BOTÓN REAL */
 .producto-precio,
 .btn-precio {
   display: inline-block;
@@ -333,8 +336,6 @@ footer {
   color: black;
   font-weight: bold;
   font-size: 14px;
-
-  /* estilo de botón */
   border: none;
   cursor: pointer;
   width: 100%;

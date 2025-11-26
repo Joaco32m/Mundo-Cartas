@@ -1,12 +1,30 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import api from "../api/axiosConfig";
 import "../styles/home.css";
+import "../styles/categorias.css";
 
 export default function Header() {
   const { isAuthenticated, logout, user } = useContext(AuthContext);
   const navigate = useNavigate();
+
   const [query, setQuery] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [categorias, setCategorias] = useState([]);
+
+  // Cargar categorías
+  useEffect(() => {
+    const cargarCategorias = async () => {
+      try {
+        const res = await api.get("categorias/");
+        setCategorias(res.data);
+      } catch (err) {
+        console.error("Error cargando categorías:", err);
+      }
+    };
+    cargarCategorias();
+  }, []);
 
   if (isAuthenticated === null) return null;
 
@@ -17,9 +35,7 @@ export default function Header() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-
     if (query.trim() === "") return;
-
     navigate(`/buscar?query=${encodeURIComponent(query)}`);
   };
 
@@ -38,7 +54,6 @@ export default function Header() {
               className="form-control"
               type="search"
               placeholder="Buscar..."
-              aria-label="Buscar"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -49,9 +64,15 @@ export default function Header() {
         </form>
       </div>
 
-      <div className="header-icons">
-        <i className="bi bi-sliders"></i>
-        <i className="bi bi-list"></i>
+      {/* CONTENEDOR DE ICONOS (padre relativo para anclar el menú) */}
+      <div className="header-icons" style={{ position: "relative" }}>
+        
+        {/* ICONO QUE ABRE EL MENÚ */}
+        <i
+          className="bi bi-list"
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{ cursor: "pointer" }}
+        ></i>
 
         <Link to="/Carrito">
           <i className="bi bi-cart3"></i>
@@ -76,6 +97,22 @@ export default function Header() {
           <Link to="/login">
             <i className="bi bi-person"></i>
           </Link>
+        )}
+
+        {/* MENÚ DESPLEGABLE ANCLADO AL ICONO (posición absoluta) */}
+        {menuOpen && (
+          <div className="menu-categorias">
+            <h4>Categorías</h4>
+            <ul>
+              {categorias.map((cat) => (
+                <li key={cat.id}>
+                  <Link to={`/buscar?categoria=${cat.nombre}`}>
+                    {cat.nombre}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
     </header>

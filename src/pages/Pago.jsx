@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from "react";
 import "../styles/pago.css";
 import api from "../api/axiosConfig";
+import { useLocation } from "react-router-dom";
 
 export default function Pago() {
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
   const [cantidad, setCantidad] = useState(0);
-  const [metodo, setMetodo] = useState(""); 
+  const [metodo, setMetodo] = useState("");
 
- 
+  const location = useLocation();
+
   useEffect(() => {
-    api.get("/carrito/")
+    api
+      .get("/carrito/?t=" + Date.now())
       .then((res) => {
         setSubtotal(res.data.total);
         setTotal(res.data.total);
         setCantidad(res.data.items.length);
       })
       .catch((err) => console.error(err));
-  }, []);
-
+  }, [location.pathname]);
 
   const continuarPago = async () => {
     if (metodo !== "webpay") {
@@ -29,7 +31,6 @@ export default function Pago() {
     try {
       const resp = await api.post("pagos/webpay/init/");
       const { url, token } = resp.data;
-
       window.location.href = `${url}?token_ws=${token}`;
     } catch (error) {
       console.error(error);
@@ -39,16 +40,11 @@ export default function Pago() {
 
   return (
     <div className="pago-container">
-
       <div className="pago-left">
         <h2 className="titulo-metodo">METODO DE PAGO</h2>
 
         <div className="metodo-opcion">
-          <input
-            type="radio"
-            name="metodo"
-            onChange={() => setMetodo("webpay")}
-          />
+          <input type="radio" name="metodo" onChange={() => setMetodo("webpay")} />
           <i className="bi bi-wallet"></i>
           <span>WebPay</span>
         </div>

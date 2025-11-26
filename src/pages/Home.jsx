@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import "../styles/home.css";
 import "../styles/normalize.css";
+import { showToast } from "../utils/toast";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -12,6 +13,7 @@ export default function Home() {
       setProducts(res.data);
     } catch (err) {
       console.error("Error cargando productos:", err);
+      showToast("Error al cargar productos", "danger");
     }
   }
 
@@ -21,14 +23,54 @@ export default function Home() {
 
   const agregarAlCarrito = async (id) => {
     try {
-      await api.post("carrito/add/", {
+      const res = await api.post("carrito/add/", {
         producto_id: id,
         cantidad: 1,
       });
-      alert("Producto agregado al carrito 👍");
+
+      if (res.data && res.data.ok === false) {
+        showToast(
+          res.data.detail || "Este producto no tiene stock disponible.",
+          "warning"
+        );
+        return;
+      }
+
+      const item = res.data.item || res.data;
+
+      if (!item) {
+        showToast("Producto agregado al carrito", "success");
+        return;
+      }
+
+      const cantidadActual = item.cantidad;
+      const stockMaximo = item.producto?.stock;
+
+      if (typeof stockMaximo === "number" && cantidadActual >= stockMaximo) {
+        showToast(
+          "Ya tienes la cantidad máxima disponible de este producto.",
+          "info"
+        );
+        return;
+      }
+
+      showToast("Producto agregado al carrito", "success");
     } catch (err) {
-      alert("Debes iniciar sesión");
-      window.location.href = "/login";
+      const mensaje = err.response?.data?.detail;
+
+      if (err.response?.status === 400) {
+        showToast(mensaje || "No se pudo agregar al carrito", "warning");
+        return;
+      }
+
+      if (err.response?.status === 401) {
+        showToast("Debes iniciar sesión", "danger");
+        window.location.href = "/login";
+        return;
+      }
+
+      showToast("Error inesperado", "danger");
+      console.error(err);
     }
   };
 
@@ -38,7 +80,7 @@ export default function Home() {
         {products.map((prod) => (
           <li key={prod.id} className="producto-card">
             <a href={`/producto/${prod.id}/`} className="product-link">
-              <img src={`http://127.0.0.1:8000${prod.imagen}`} alt={prod.nombre} />
+              <img src={prod.imagen_url} alt={prod.nombre} />
               <h3 className="producto-nombre">{prod.nombre}</h3>
             </a>
 

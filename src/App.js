@@ -15,11 +15,18 @@ import SearchResults from "./pages/SearchResults.jsx";
 import PagoExitoso from "./pages/PagoExitoso";
 import PagoFallido from "./pages/PagoFallido";
 
-
 export default function App() {
   return (
     <AuthProvider>
       <Router>
+
+        {/* 🔥 CONTENEDOR GLOBAL DE TOASTS (Bootstrap) */}
+        <div
+          id="toast-area"
+          className="toast-container position-fixed top-0 end-0 p-3"
+          style={{ zIndex: 9999 }}
+        ></div>
+
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -48,6 +55,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route path="/Pago" element={<Pago />} />
           </Routes>
         </Layout>
