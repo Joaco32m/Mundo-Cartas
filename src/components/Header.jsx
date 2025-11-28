@@ -13,7 +13,6 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [categorias, setCategorias] = useState([]);
 
-  // Cargar categorías
   useEffect(() => {
     const cargarCategorias = async () => {
       try {
@@ -64,25 +63,30 @@ export default function Header() {
         </form>
       </div>
 
-      {/* CONTENEDOR DE ICONOS (padre relativo para anclar el menú) */}
       <div className="header-icons" style={{ position: "relative" }}>
-        
-        {/* ICONO QUE ABRE EL MENÚ */}
         <i
           className="bi bi-list"
           onClick={() => setMenuOpen(!menuOpen)}
           style={{ cursor: "pointer" }}
         ></i>
 
-        <Link to="/Carrito">
-          <i className="bi bi-cart3"></i>
-        </Link>
+        {!(user?.rol === "Vendedor") && (
+          <Link to="/Carrito">
+            <i className="bi bi-cart3"></i>
+          </Link>
+        )}
 
         {isAuthenticated ? (
           <>
             {user?.rol === "Administrador" && (
               <Link to="/admin-panel">
                 <i className="bi bi-gear" title="Panel de administración"></i>
+              </Link>
+            )}
+
+            {user?.rol === "Vendedor" && (
+              <Link to="/vendedor/panel">
+                <i className="bi bi-shop" title="Panel de vendedor"></i>
               </Link>
             )}
 
@@ -99,7 +103,6 @@ export default function Header() {
           </Link>
         )}
 
-        {/* MENÚ DESPLEGABLE ANCLADO AL ICONO (posición absoluta) */}
         {menuOpen && (
           <div className="menu-categorias">
             <h4>Categorías</h4>

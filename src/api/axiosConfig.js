@@ -39,12 +39,10 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const detail = error.response?.data?.detail || "";
 
-    // 🔥 FIX: NO cerrar sesión por errores de stock
     const esErrorStock =
       detail.toLowerCase().includes("stock") ||
       detail.toLowerCase().includes("insuficiente");
 
-    // 🔥 SOLO cerrar sesión con un 401 REAL, no un 400 del backend
     if (status === 401 && !esErrorStock) {
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");

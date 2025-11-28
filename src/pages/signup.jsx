@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../styles/signup.css";
 import { Link, useNavigate } from "react-router-dom";
+import { showToast } from "../utils/toast";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ const SignUp = () => {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/registration/registro/",
+        "http://127.0.0.1:8000/api/registro/",
         {
           method: "POST",
           headers: {
@@ -34,10 +35,9 @@ const SignUp = () => {
       }
 
       if (response.ok) {
-        alert("Registro exitoso, ahora puedes iniciar sesión.");
+        showToast("Registro exitoso, ahora puedes iniciar sesión.", "success");
         navigate("/login");
       } else {
-        // ==== NUEVO MANEJADOR DE ERRORES ====
         const errorMsg =
           data.username?.[0] ||
           data.email?.[0] ||
@@ -45,11 +45,11 @@ const SignUp = () => {
           data.detail ||
           "Error desconocido";
 
-        alert("Error al registrarse: " + errorMsg);
+        showToast("Error al registrarse: ", "danger" + errorMsg);
       }
     } catch (error) {
       console.error("Error de red:", error);
-      alert("Error al conectar con el servidor.");
+      showToast("Error al conectar con el servidor.", "dang");
     } finally {
       setLoading(false);
     }

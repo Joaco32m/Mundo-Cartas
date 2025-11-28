@@ -22,7 +22,7 @@ export default function AdminPanel() {
         <button
           className={activeSection === "reportes" ? "active" : ""}
           onClick={() => setActiveSection("reportes")}
-        >
+        > 
           Reportes de Venta
         </button>
 

@@ -22,14 +22,12 @@ export default function SearchResults() {
       .then((res) => {
         let filtrados = res.data;
 
-        // 🔍 FILTRO POR NOMBRE
         if (query.trim()) {
           filtrados = filtrados.filter((p) =>
             p.nombre.toLowerCase().includes(query.toLowerCase())
           );
         }
 
-        // 🟣 FILTRO POR CATEGORÍA
         if (categoria.trim()) {
           filtrados = filtrados.filter(
             (p) =>
@@ -51,7 +49,7 @@ export default function SearchResults() {
         cantidad: 1,
       });
 
-      showToast("Producto agregado al carrito ✔", "success");
+      showToast("Producto agregado al carrito ", "success");
     } catch (err) {
       const errorMsg = err.response?.data?.detail;
 

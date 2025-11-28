@@ -13,6 +13,7 @@ main {
   flex: 1;
 }
 
+
 .container-header {
   display: flex;
   background-color: #6d11a3;
@@ -36,13 +37,6 @@ main {
   display: flex;
   width: 25rem;
   align-items: center;
-}
-
-.container-header {
-  display: flex;
-  background-color: #6d11a3;
-  height: 7rem;
-  gap: 100px;
 }
 
 .logout-icon:hover {
@@ -72,10 +66,6 @@ main {
   width: 25rem;
 }
 
-main {
-  width: 100%;
-  height: 100%;
-}
 
 footer {
   display: flex;
@@ -149,7 +139,7 @@ footer {
 }
 
 .icon-redes a .bi-instagram,
-.bi-facebook {
+.icon-redes a .bi-facebook {
   font-size: 1.5rem;
   color: #000;
 }
@@ -161,6 +151,7 @@ footer {
   justify-content: center;
   align-items: center;
 }
+
 
 .header-icons {
   display: flex;
@@ -180,6 +171,7 @@ footer {
   color: #f9d400;
   transform: scale(1.1);
 }
+
 
 .Productos .bi-sliders {
   font-size: 1.6rem;
@@ -245,6 +237,7 @@ footer {
   margin-top: 5px;
 }
 
+
 @media (max-width: 992px) {
   .container-header {
     flex-wrap: wrap;
@@ -280,6 +273,7 @@ footer {
 }
 
 
+
 .productos-container {
   padding: 40px 60px;
 }
@@ -301,12 +295,17 @@ footer {
   text-align: center;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   transition: transform 0.2s ease;
-
   height: 370px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
+
+.productos-grid .producto-card:hover {
+  transform: translateY(-4px);
+}
+
+
 
 .productos-grid .producto-card img {
   width: 80%;
@@ -314,16 +313,27 @@ footer {
   object-fit: contain;
 }
 
+
 .producto-nombre {
   margin-top: 20px;
   font-size: 16px;
   font-weight: bold;
   color: #000;
-  
+  text-decoration: none;
   min-height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+
+.productos-grid .producto-card a {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.productos-grid .producto-card a:hover {
+  text-decoration: none !important;
 }
 
 .producto-precio,

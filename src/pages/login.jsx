@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { AuthContext } from "../context/AuthContext";
 import "../styles/login.css";
+import { showToast } from "../utils/toast";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -28,15 +29,15 @@ export default function Login() {
       const rol = userRes.data.rol;
 
       localStorage.setItem("rol", rol);
-      alert(`Bienvenido ${rol}`);
+      showToast(`Bienvenido ${rol}`);
 
       if (rol === "Administrador") navigate("/admin-panel");
-      else if (rol === "Vendedor") navigate("/vendedor-panel");
+      else if (rol === "Vendedor") navigate("/vendedor/panel");
       else navigate("/");
 
     } catch (err) {
       console.error("Error en login:", err);
-      alert("Usuario o contraseña incorrectos");
+      showToast("Usuario o contraseña incorrectos", "danger");
     }
   };
 

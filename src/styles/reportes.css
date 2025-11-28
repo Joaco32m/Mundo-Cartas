@@ -1,0 +1,62 @@
+.reportes-container {
+  padding: 40px;
+  background: white;
+  border-radius: 10px;
+  width: 90%;
+  margin: 0 auto;
+  font-family: "Georgia", serif;
+}
+
+.titulo-reporte {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.subtitulo {
+  margin-top: 25px;
+  font-size: 22px;
+  color: #333;
+}
+
+.btn-excel {
+  background: #6d11a3;
+  padding: 12px 18px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn-excel:hover {
+  background: #4b0f73;
+}
+
+.tabla-reportes {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.tabla-reportes th,
+.tabla-reportes td {
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: center;
+  background: white;
+  font-size: 15px;
+  color: #000;
+}
+
+.tabla-reportes th {
+  background: #f3e8ff;
+  font-weight: bold;
+}
+
+.tabla-reportes tr:nth-child(even) {
+  background: #fafafa;
+}

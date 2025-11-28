@@ -1,5 +1,4 @@
 import { Toast } from "bootstrap";
-
 export function showToast(message, type = "success") {
   const container = document.getElementById("toast-area");
   if (!container) return;

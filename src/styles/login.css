@@ -111,3 +111,9 @@
 .link-login:hover {
   text-decoration: underline;
 }
+
+.form-control.input-login {
+  background: white !important;
+  color: black !important;
+  border: 1px solid #999 !important;
+}

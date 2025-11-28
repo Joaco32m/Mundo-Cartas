@@ -1,47 +1,76 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../../../api/axiosConfig";
+import { showToast } from "../../../utils/toast";
 import "../../../styles/usuarios.css";
 
 export default function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
+  const [vista, setVista] = useState("listar-usuarios");
+
   const [nuevoUsuario, setNuevoUsuario] = useState({
     username: "",
     email: "",
     rut: "",
     telefono: "",
     password: "",
-    rol: "Administrador",
+    rol: "Vendedor",
   });
 
-  const [editando, setEditando] = useState(null);
+  const [editUsuarioModal, setEditUsuarioModal] = useState(false);
+  const [usuarioEdit, setUsuarioEdit] = useState(null);
+
 
   useEffect(() => {
-    obtenerUsuarios();
+    cargarUsuarios();
   }, []);
 
-  const obtenerUsuarios = async () => {
+  const cargarUsuarios = async () => {
     try {
       const res = await api.get("usuarios/");
       setUsuarios(res.data);
     } catch (error) {
-      console.error("Error cargando usuarios:", error);
+      console.log("ERROR LISTANDO:", error.response?.data);
+      showToast("No se pudo cargar usuarios", "danger");
     }
   };
 
-  const handleChange = (e) => {
-    setNuevoUsuario({ ...nuevoUsuario, [e.target.name]: e.target.value });
+
+  const handleNewChange = (e) => {
+    setNuevoUsuario({
+      ...nuevoUsuario,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const validarNuevo = () => {
+    if (!nuevoUsuario.username.trim())
+      return showToast("El nombre es obligatorio", "warning");
+
+    if (!nuevoUsuario.email.trim())
+      return showToast("El correo es obligatorio", "warning");
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nuevoUsuario.email))
+      return showToast("El correo no es válido", "warning");
+
+    if (!nuevoUsuario.password.trim())
+      return showToast("La contraseña es obligatoria", "warning");
+
+    if (nuevoUsuario.password.length < 4)
+      return showToast(
+        "La contraseña debe tener mínimo 4 caracteres",
+        "warning"
+      );
+
+    return true;
+  };
+
+
+  const crearUsuario = async () => {
+    if (!validarNuevo()) return;
+
     try {
-      if (editando) {
-        await api.put(`usuarios/${editando}/`, nuevoUsuario);
-        alert("Usuario actualizado");
-      } else {
-        await api.post("usuarios/", nuevoUsuario);
-        alert("Usuario creado");
-      }
+      await api.post("usuarios/", nuevoUsuario);
+      showToast("Usuario creado correctamente", "success");
 
       setNuevoUsuario({
         username: "",
@@ -49,138 +78,284 @@ export default function Usuarios() {
         rut: "",
         telefono: "",
         password: "",
-        rol: "Administrador",
+        rol: "Vendedor",
       });
 
-      setEditando(null);
-      obtenerUsuarios();
+      cargarUsuarios();
+      setVista("listar-usuarios");
     } catch (error) {
-      console.error("Error al guardar usuario:", error);
+      const data = error.response?.data;
+
+      const msg =
+        data?.error ||
+        (Array.isArray(Object.values(data || {})[0])
+          ? Object.values(data)[0][0]
+          : Object.values(data || {})[0]) ||
+        "Error desconocido";
+
+      showToast(msg, "danger");
     }
   };
+
+  const abrirEditarUsuario = (u) => {
+    setUsuarioEdit({
+      id: u.id,
+      username: u.username,
+      email: u.email,
+      rut: u.rut,
+      telefono: u.telefono,
+      rol: u.rol,
+      password: "",
+    });
+
+    setEditUsuarioModal(true);
+  };
+
+  const handleEditChange = (e) => {
+    setUsuarioEdit({
+      ...usuarioEdit,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const guardarEdicionUsuario = async () => {
+    if (!usuarioEdit.username.trim())
+      return showToast("El nombre es obligatorio", "warning");
+
+    if (!usuarioEdit.email.trim())
+      return showToast("El correo es obligatorio", "warning");
+
+    try {
+      await api.put(`usuarios/${usuarioEdit.id}/`, usuarioEdit);
+      showToast("Usuario actualizado", "success");
+      setEditUsuarioModal(false);
+      cargarUsuarios();
+    } catch (error) {
+      const data = error.response?.data;
+
+      const msg =
+        data?.error ||
+        (Array.isArray(Object.values(data || {})[0])
+          ? Object.values(data)[0][0]
+          : Object.values(data || {})[0]) ||
+        "Error al actualizar";
+
+      showToast(msg, "danger");
+    }
+  };
+
 
   const eliminarUsuario = async (id) => {
     if (!window.confirm("¿Seguro que deseas eliminar este usuario?")) return;
 
     try {
       await api.delete(`usuarios/${id}/`);
-      alert("Usuario eliminado");
-      obtenerUsuarios();
+      showToast("Usuario eliminado", "success");
+      cargarUsuarios();
     } catch (error) {
-      console.error("Error:", error);
+      console.log("ERROR ELIMINANDO:", error.response?.data);
+
+      const data = error.response?.data;
+      const msg =
+        data?.error ||
+        (Array.isArray(Object.values(data || {})[0])
+          ? Object.values(data)[0][0]
+          : Object.values(data || {})[0]) ||
+        "Error eliminando usuario";
+
+      showToast(msg, "danger");
     }
   };
 
-  const editarUsuario = (usuario) => {
-    setEditando(usuario.id);
-    setNuevoUsuario({
-      username: usuario.username,
-      email: usuario.email,
-      rut: usuario.rut || "",
-      telefono: usuario.telefono || "",
-      password: "",
-      rol: usuario.rol,
-    });
-  };
-
   return (
-    <div className="usuarios-container">
-      <h2>Gestión de Usuarios</h2>
+    <div className="admin-container">
+      <h3>Gestión de Usuarios</h3>
 
-      <form className="form-usuario" onSubmit={handleSubmit}>
-        <div className="form-grid">
+      <div className="acciones-producto">
+        <button
+          className={vista === "listar-usuarios" ? "active" : ""}
+          onClick={() => setVista("listar-usuarios")}
+        >
+          Ver Usuarios
+        </button>
+
+        <button
+          className={vista === "crear-usuarios" ? "active" : ""}
+          onClick={() => setVista("crear-usuarios")}
+        >
+          Crear Usuario
+        </button>
+      </div>
+
+      {vista === "crear-usuarios" && (
+        <div className="crear-form">
+          <h3>Crear Usuario</h3>
+
+          <label>Usuario</label>
           <input
-            type="text"
             name="username"
-            placeholder="Usuario"
             value={nuevoUsuario.username}
-            onChange={handleChange}
-            required
+            onChange={handleNewChange}
           />
 
+          <label>Correo</label>
           <input
-            type="email"
             name="email"
-            placeholder="Correo"
+            type="email"
             value={nuevoUsuario.email}
-            onChange={handleChange}
-            required
+            onChange={handleNewChange}
           />
 
+          <label>RUT</label>
           <input
-            type="text"
             name="rut"
-            placeholder="RUT"
             value={nuevoUsuario.rut}
-            onChange={handleChange}
+            onChange={handleNewChange}
           />
 
+          <label>Teléfono</label>
           <input
-            type="text"
             name="telefono"
-            placeholder="Teléfono"
             value={nuevoUsuario.telefono}
-            onChange={handleChange}
+            onChange={handleNewChange}
           />
 
+          <label>Contraseña</label>
           <input
             type="password"
             name="password"
-            placeholder="Contraseña"
-            required={!editando}
-            onChange={handleChange}
+            value={nuevoUsuario.password}
+            onChange={handleNewChange}
           />
 
-          <select name="rol" value={nuevoUsuario.rol} onChange={handleChange}>
-            <option value="Administrador">Administrador</option>
+          <label>Rol</label>
+          <select
+            name="rol"
+            value={nuevoUsuario.rol}
+            onChange={handleNewChange}
+          >
             <option value="Vendedor">Vendedor</option>
+            <option value="Administrador">Administrador</option>
           </select>
+
+          <button className="btn-save" onClick={crearUsuario}>
+            Crear
+          </button>
         </div>
+      )}
 
-        <button className="btn-agregar">
-          {editando ? "Actualizar Usuario" : "Agregar Usuario"}
-        </button>
-      </form>
+      {vista === "listar-usuarios" && (
+        <>
+          <h3>Usuarios Registrados</h3>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th>RUT</th>
+                <th>Teléfono</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
 
-      <table className="tabla-usuarios">
-        <thead>
-          <tr>
-            <th>Usuario</th>
-            <th>Correo</th>
-            <th>RUT</th>
-            <th>Teléfono</th>
-            <th>Rol</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
+            <tbody>
+              {usuarios.map((u) => (
+                <tr key={u.id}>
+                  <td>{u.id}</td>
+                  <td>{u.username}</td>
+                  <td>{u.email}</td>
+                  <td>{u.rut}</td>
+                  <td>{u.telefono}</td>
+                  <td>{u.rol}</td>
 
-        <tbody>
-          {usuarios.map((user) => (
-            <tr key={user.id}>
-              <td>{user.username}</td>
-              <td>{user.email}</td>
-              <td>{user.rut || "—"}</td>
-              <td>{user.telefono || "—"}</td>
-              <td>{user.rol}</td>
+                  <td>
+                    <button
+                      className="btn-edit"
+                      onClick={() => abrirEditarUsuario(u)}
+                    >
+                      Editar
+                    </button>
 
-              <td>
-                <button
-                  className="btn-editar"
-                  onClick={() => editarUsuario(user)}
-                >
-                  Editar
-                </button>
-                <button
-                  className="btn-eliminar"
-                  onClick={() => eliminarUsuario(user.id)}
-                >
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                    <button
+                      className="btn-delete"
+                      onClick={() => eliminarUsuario(u.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      {editUsuarioModal && usuarioEdit && (
+        <div className="mc-modal">
+          <div className="mc-modal-content">
+            <h3>Editar Usuario</h3>
+
+            <label>Usuario</label>
+            <input
+              name="username"
+              value={usuarioEdit.username}
+              onChange={handleEditChange}
+            />
+
+            <label>Correo</label>
+            <input
+              name="email"
+              type="email"
+              value={usuarioEdit.email}
+              onChange={handleEditChange}
+            />
+
+            <label>RUT</label>
+            <input
+              name="rut"
+              value={usuarioEdit.rut}
+              onChange={handleEditChange}
+            />
+
+            <label>Teléfono</label>
+            <input
+              name="telefono"
+              value={usuarioEdit.telefono}
+              onChange={handleEditChange}
+            />
+
+            <label>Contraseña (opcional)</label>
+            <input
+              type="password"
+              name="password"
+              onChange={handleEditChange}
+            />
+
+            <label>Rol</label>
+            <select
+              name="rol"
+              value={usuarioEdit.rol}
+              onChange={handleEditChange}
+            >
+              <option value="Vendedor">Vendedor</option>
+              <option value="Administrador">Administrador</option>
+            </select>
+
+            <button className="btn-save" onClick={guardarEdicionUsuario}>
+              Guardar Cambios
+            </button>
+
+            <button
+              className="btn-cancel"
+              onClick={() => setEditUsuarioModal(false)}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -88,7 +88,7 @@ export default function Home() {
               className="producto-precio btn-precio"
               onClick={() => agregarAlCarrito(prod.id)}
             >
-              ${prod.precio.toLocaleString("es-CL")} CLP
+              ${Number(prod.precio).toLocaleString("es-CL")} CLP
             </button>
           </li>
         ))}

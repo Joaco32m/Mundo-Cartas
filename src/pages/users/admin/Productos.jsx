@@ -11,24 +11,17 @@ export default function Productos() {
 
   const [vista, setVista] = useState("lista-productos");
 
-  // Edición de producto
   const [editProductoModal, setEditProductoModal] = useState(false);
-  const [productoEdit, setProductoEdit] = useState(null);
+  const [productoEdit, setProductoEdit] = useState({});
 
-  // Edición de categoría
   const [editCategoriaModal, setEditCategoriaModal] = useState(false);
-  const [categoriaEdit, setCategoriaEdit] = useState(null);
-
-  // ===============================
-  //  CARGAS INICIALES
-  // ===============================
+  const [categoriaEdit, setCategoriaEdit] = useState({});
 
   const cargarProductos = async () => {
     try {
       const res = await api.get("productos/");
       setProductos(res.data);
-    } catch (err) {
-      console.error("Error cargando productos:", err);
+    } catch {
       showToast("Error cargando productos", "danger");
     }
   };
@@ -37,8 +30,7 @@ export default function Productos() {
     try {
       const res = await api.get("categorias/");
       setCategorias(res.data);
-    } catch (err) {
-      console.error("Error cargando categorías:", err);
+    } catch {
       showToast("Error cargando categorías", "danger");
     }
   };
@@ -48,12 +40,17 @@ export default function Productos() {
     cargarCategorias();
   }, []);
 
-  // ===============================
-  //  EDITAR PRODUCTO
-  // ===============================
-
   const abrirEditarProducto = (prod) => {
-    setProductoEdit({ ...prod });
+    setProductoEdit({
+      id: prod.id,
+      nombre: prod.nombre,
+      descripcion: prod.descripcion || "",
+      precio: prod.precio,
+      stock: prod.stock,
+      categoria: prod.categoria,
+      imagen: null,
+    });
+
     setEditProductoModal(true);
   };
 
@@ -74,47 +71,40 @@ export default function Productos() {
   const guardarCambiosProducto = async () => {
     const formData = new FormData();
 
-    for (const key in productoEdit) {
-      formData.append(key, productoEdit[key]);
-    }
+    Object.entries(productoEdit).forEach(([key, value]) => {
+      if (value !== null) formData.append(key, value);
+    });
 
     try {
       await api.patch(`productos/${productoEdit.id}/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
       showToast("Producto actualizado correctamente", "success");
       setEditProductoModal(false);
       cargarProductos();
-    } catch (err) {
-      console.error("Error guardando cambios:", err);
-      showToast("Error actualizando producto", "danger");
+    } catch (error) {
+      console.log(error);
+      showToast("Error al actualizar producto", "danger");
     }
   };
-
-  // ===============================
-  //  ELIMINAR PRODUCTO
-  // ===============================
 
   const eliminarProducto = async (id) => {
-    showToast("Eliminando producto…", "info");
-
     try {
       await api.delete(`productos/${id}/`);
-      showToast("Producto eliminado ✔", "success");
+      showToast("Producto eliminado", "success");
       cargarProductos();
-    } catch (err) {
-      console.error("Error eliminando producto:", err);
-      showToast("Error al eliminar producto", "danger");
+    } catch {
+      showToast("Error eliminando producto", "danger");
     }
   };
 
-  // ===============================
-  //  EDITAR CATEGORÍA
-  // ===============================
-
   const abrirEditarCategoria = (cat) => {
-    setCategoriaEdit({ ...cat });
+    setCategoriaEdit({
+      id: cat.id,
+      nombre: cat.nombre,
+      descripcion: cat.descripcion,
+    });
+
     setEditCategoriaModal(true);
   };
 
@@ -128,65 +118,42 @@ export default function Productos() {
   const guardarCambiosCategoria = async () => {
     try {
       await api.patch(`categorias/${categoriaEdit.id}/`, {
-        nombre: categoriaEdit.nombre,
         descripcion: categoriaEdit.descripcion,
       });
 
-      showToast("Categoría actualizada correctamente", "success");
+      showToast("Categoría actualizada", "success");
       setEditCategoriaModal(false);
       cargarCategorias();
-    } catch (err) {
-      console.error("Error actualizando categoría:", err);
-      const msg =
-        err.response?.data?.detail || "Error al actualizar la categoría";
-      showToast(msg, "danger");
+    } catch {
+      showToast("Error actualizando categoría", "danger");
     }
   };
-
-  // ===============================
-  //  ELIMINAR CATEGORÍA
-  // ===============================
 
   const eliminarCategoria = async (id) => {
     const categoria = categorias.find((c) => c.id === id);
 
-    // Verificar si hay productos que usan esta categoría
     const productosAsociados = productos.filter(
       (p) => p.categoria === categoria.nombre
     );
 
     if (productosAsociados.length > 0) {
-      showToast(
-        "No se puede eliminar: la categoría tiene productos asociados",
-        "warning"
-      );
+      showToast("No se puede eliminar: tiene productos asociados", "warning");
       return;
     }
 
-    showToast("Eliminando categoría…", "info");
-
     try {
       await api.delete(`categorias/${id}/`);
-      showToast("Categoría eliminada ✔", "success");
+      showToast("Categoría eliminada", "success");
       cargarCategorias();
-    } catch (err) {
-      console.error("Error eliminando categoría:", err);
-      const msg =
-        err.response?.data?.detail ||
-        "Error al eliminar la categoría. Intente nuevamente.";
-      showToast(msg, "danger");
+    } catch {
+      showToast("Error eliminando categoría", "danger");
     }
   };
-
-  // ===============================
-  //  RENDER
-  // ===============================
 
   return (
     <div className="admin-container">
       <h3>Gestión de Productos</h3>
 
-      {/* NAV DE VISTAS */}
       <div className="acciones-producto">
         <button
           className={vista === "lista-productos" ? "active" : ""}
@@ -217,21 +184,12 @@ export default function Productos() {
         </button>
       </div>
 
-      {/* VISTA: CREAR PRODUCTO */}
-      {vista === "crear-productos" && (
-        <CrearProducto recargar={cargarProductos} />
-      )}
+      {vista === "crear-productos" && <CrearProducto recargar={cargarProductos} />}
+      {vista === "crear-categorias" && <CrearCategoria recargar={cargarCategorias} />}
 
-      {/* VISTA: CREAR CATEGORÍA */}
-      {vista === "crear-categorias" && (
-        <CrearCategoria recargar={cargarCategorias} />
-      )}
-
-      {/* VISTA: LISTAR CATEGORÍAS */}
       {vista === "listar-categorias" && (
         <>
-          <h3>Categorías Registradas</h3>
-
+          <h3>Categorías</h3>
           <table className="admin-table">
             <thead>
               <tr>
@@ -248,6 +206,7 @@ export default function Productos() {
                   <td>{c.id}</td>
                   <td>{c.nombre}</td>
                   <td>{c.descripcion}</td>
+
                   <td>
                     <button
                       className="btn-edit"
@@ -269,10 +228,9 @@ export default function Productos() {
         </>
       )}
 
-      {/* VISTA: LISTAR PRODUCTOS */}
       {vista === "lista-productos" && (
         <>
-          <h3>Productos Registrados</h3>
+          <h3>Productos</h3>
 
           <table className="admin-table">
             <thead>
@@ -291,15 +249,9 @@ export default function Productos() {
               {productos.map((p) => (
                 <tr key={p.id}>
                   <td>{p.id}</td>
-
                   <td>
-                    <img
-                      src={p.imagen_url}
-                      className="img-mini"
-                      alt={p.nombre}
-                    />
+                    <img src={p.imagen_url} alt="" className="img-mini" />
                   </td>
-
                   <td>{p.nombre}</td>
                   <td>${parseInt(p.precio).toLocaleString("es-CL")}</td>
                   <td>{p.stock}</td>
@@ -327,23 +279,22 @@ export default function Productos() {
         </>
       )}
 
-      {/* MODAL EDITAR PRODUCTO */}
-      {editProductoModal && productoEdit && (
-        <div className="modal">
-          <div className="modal-content">
+      {editProductoModal && (
+        <div className="admin-modal">
+          <div className="admin-modal-content">
             <h3>Editar Producto</h3>
 
             <label>Nombre</label>
             <input
               name="nombre"
-              value={productoEdit.nombre}
+              value={productoEdit.nombre || ""}
               onChange={handleProductoChange}
             />
 
             <label>Descripción</label>
             <textarea
               name="descripcion"
-              value={productoEdit.descripcion}
+              value={productoEdit.descripcion || ""}
               onChange={handleProductoChange}
             />
 
@@ -351,7 +302,7 @@ export default function Productos() {
             <input
               type="number"
               name="precio"
-              value={productoEdit.precio}
+              value={productoEdit.precio || ""}
               onChange={handleProductoChange}
             />
 
@@ -359,14 +310,14 @@ export default function Productos() {
             <input
               type="number"
               name="stock"
-              value={productoEdit.stock}
+              value={productoEdit.stock || ""}
               onChange={handleProductoChange}
             />
 
             <label>Categoría</label>
             <input
               name="categoria"
-              value={productoEdit.categoria}
+              value={productoEdit.categoria || ""}
               onChange={handleProductoChange}
             />
 
@@ -374,7 +325,7 @@ export default function Productos() {
             <input type="file" onChange={handleImagen} />
 
             <button className="btn-save" onClick={guardarCambiosProducto}>
-              Guardar Cambios
+              Guardar
             </button>
 
             <button
@@ -387,28 +338,23 @@ export default function Productos() {
         </div>
       )}
 
-      {/* MODAL EDITAR CATEGORÍA */}
-      {editCategoriaModal && categoriaEdit && (
-        <div className="modal">
-          <div className="modal-content">
+      {editCategoriaModal && (
+        <div className="admin-modal">
+          <div className="admin-modal-content">
             <h3>Editar Categoría</h3>
 
             <label>Nombre</label>
-            <input
-              name="nombre"
-              value={categoriaEdit.nombre}
-              onChange={handleCategoriaChange}
-            />
+            <input value={categoriaEdit.nombre || ""} readOnly />
 
             <label>Descripción</label>
             <textarea
               name="descripcion"
-              value={categoriaEdit.descripcion}
+              value={categoriaEdit.descripcion || ""}
               onChange={handleCategoriaChange}
             />
 
             <button className="btn-save" onClick={guardarCambiosCategoria}>
-              Guardar Cambios
+              Guardar
             </button>
 
             <button

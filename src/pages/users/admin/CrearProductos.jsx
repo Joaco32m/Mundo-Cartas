@@ -16,15 +16,11 @@ export default function CrearProducto({ recargar }) {
     stock: "",
   });
 
-
   useEffect(() => {
     api
       .get("categorias/")
       .then((res) => setCategorias(res.data))
-      .catch((err) => {
-        console.error("Error cargando categorías:", err);
-        showToast("Error al cargar categorías", "danger");
-      });
+      .catch(() => showToast("Error al cargar categorías", "danger"));
   }, []);
 
   const handleChange = (e) => {
@@ -45,17 +41,14 @@ export default function CrearProducto({ recargar }) {
       formData.append(key, producto[key]);
     });
 
-    if (imagen) {
-      formData.append("imagen", imagen);
-    }
+    if (imagen) formData.append("imagen", imagen);
 
     try {
       await api.post("productos/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-
-      showToast("Producto creado con éxito ✔", "success");
+      showToast("Producto creado con éxito", "success");
 
       if (recargar) recargar();
 
@@ -66,18 +59,17 @@ export default function CrearProducto({ recargar }) {
         categoria: "",
         stock: "",
       });
+
       setPreview(null);
       setImagen(null);
+
     } catch (error) {
-      console.error("Error al crear el producto:", error);
-
-      const msgBackend =
+      showToast(
         error.response?.data?.detail ||
-        error.response?.data?.error ||
-        "Error al crear el producto";
-
-
-      showToast(msgBackend, "danger");
+          error.response?.data?.error ||
+          "Error al crear el producto",
+        "danger"
+      );
     }
   };
 
@@ -87,7 +79,6 @@ export default function CrearProducto({ recargar }) {
 
       <form onSubmit={handleSubmit} className="form-producto">
         <div className="columna-izquierda">
-
           <label className="file-label">
             <input type="file" accept="image/*" onChange={handleImageChange} />
             <i className="bi bi-image"></i> Subir imagen
@@ -95,7 +86,7 @@ export default function CrearProducto({ recargar }) {
 
           <input
             type="text"
-            className="form-control"
+            className="crear-input"
             name="nombre"
             placeholder="Nombre"
             required
@@ -104,7 +95,7 @@ export default function CrearProducto({ recargar }) {
           />
 
           <textarea
-            className="form-control"
+            className="crear-textarea"
             name="descripcion"
             placeholder="Descripción"
             value={producto.descripcion}
@@ -113,7 +104,7 @@ export default function CrearProducto({ recargar }) {
 
           <input
             type="number"
-            className="form-control"
+            className="crear-input"
             name="precio"
             placeholder="Precio"
             required
@@ -122,11 +113,11 @@ export default function CrearProducto({ recargar }) {
           />
 
           <select
+            className="crear-select"
             name="categoria"
-            className="form-select"
+            required
             value={producto.categoria}
             onChange={handleChange}
-            required
           >
             <option value="">Seleccione categoría...</option>
             {categorias.map((cat) => (
@@ -138,7 +129,7 @@ export default function CrearProducto({ recargar }) {
 
           <input
             type="number"
-            className="form-control"
+            className="crear-input"
             name="stock"
             placeholder="Stock"
             value={producto.stock}

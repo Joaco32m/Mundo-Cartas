@@ -15,7 +15,6 @@
   margin-bottom: 2rem;
 }
 
-/* Botón agregar */
 .btn-agregar {
   background-color: #2ecc40;
   color: black;
@@ -33,7 +32,6 @@
   cursor: pointer;
 }
 
-/* Contenedor principal */
 .form-producto {
   display: flex;
   gap: 50px;
@@ -41,10 +39,9 @@
   padding: 30px;
   border-radius: 10px;
   background: #fafafa;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Columnas */
 .columna-izquierda {
   display: flex;
   flex-direction: column;
@@ -59,7 +56,6 @@
   width: 40%;
 }
 
-/* Input archivo */
 .file-label {
   display: flex;
   align-items: center;
@@ -80,7 +76,6 @@
   display: none;
 }
 
-/* Inputs y textarea */
 input,
 textarea,
 select {
@@ -92,14 +87,12 @@ select {
   background: white;
 }
 
-/* Para integrarse con bootstrap mejor */
 input.form-control,
 textarea.form-control,
 select.form-select {
   border-radius: 6px;
 }
 
-/* Área de preview */
 .preview {
   background-color: #ddd;
   width: 250px;
@@ -115,4 +108,25 @@ select.form-select {
   height: 100%;
   object-fit: contain;
   border: 1px solid #999;
+}
+
+.crear-input,
+.crear-textarea,
+.crear-select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  background: white !important;
+  color: #333 !important;
+  font-size: 15px;
+  outline: none;
+  box-shadow: none !important;
+}
+
+.crear-input:focus,
+.crear-textarea:focus,
+.crear-select:focus {
+  border-color: #6d11a3;
+  box-shadow: 0 0 4px rgba(109, 17, 163, 0.3) !important;
 }

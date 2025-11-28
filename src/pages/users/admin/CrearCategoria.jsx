@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import api from "../../../api/axiosConfig";
 import { showToast } from "../../../utils/toast";
-import "../../../styles/crearproductos.css";
+import "../../../styles/crearcategorias.css";
 
 export default function CrearCategoria({ recargar }) {
   const [categoria, setCategoria] = useState({
@@ -16,27 +16,22 @@ export default function CrearCategoria({ recargar }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!categoria.nombre.trim()) {
-      showToast("El nombre de la categoría es obligatorio", "warning");
-      return;
-    }
+    if (!categoria.nombre.trim())
+      return showToast("El nombre de la categoría es obligatorio", "warning");
 
-    if (!categoria.descripcion.trim()) {
-      showToast("La descripción es obligatoria", "warning");
-      return;
-    }
+    if (!categoria.descripcion.trim())
+      return showToast("La descripción es obligatoria", "warning");
 
     const formData = new FormData();
-    Object.keys(categoria).forEach((key) => {
-      formData.append(key, categoria[key]);
-    });
+    formData.append("nombre", categoria.nombre);
+    formData.append("descripcion", categoria.descripcion);
 
     try {
       await api.post("categorias/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      showToast("Categoría creada con éxito ✔", "success");
+      showToast("Categoría creada con éxito", "success");
 
       if (recargar) recargar();
 
@@ -44,49 +39,40 @@ export default function CrearCategoria({ recargar }) {
         nombre: "",
         descripcion: "",
       });
-
     } catch (error) {
-      console.error("Error al crear la categoría:", error);
-
-      const msg =
+      showToast(
         error.response?.data?.detail ||
-        error.response?.data?.nombre ||
-        error.response?.data?.descripcion ||
-        "Error al crear la categoría";
-
-      showToast(msg, "danger");
+          error.response?.data?.nombre ||
+          error.response?.data?.descripcion ||
+          "Error al crear categoría",
+        "danger"
+      );
     }
   };
 
   return (
-    <div className="crear-producto-container">
-      <h3 className="subtitulo-panel">Crear Categoría Nueva</h3>
+    <div className="crear-categoria-container">
+      <h3 className="crear-categoria-titulo">Crear Categoría Nueva</h3>
 
-      <form onSubmit={handleSubmit} className="form-producto">
-        <div className="columna-izquierda">
+      <form onSubmit={handleSubmit} className="crear-categoria-form">
+        <input
+          type="text"
+          className="crear-categoria-input"
+          name="nombre"
+          placeholder="Nombre"
+          value={categoria.nombre}
+          onChange={handleChange}
+        />
 
-          <input
-            type="text"
-            className="form-control"
-            name="nombre"
-            placeholder="Nombre"
-            required
-            value={categoria.nombre}
-            onChange={handleChange}
-          />
+        <textarea
+          className="crear-categoria-textarea"
+          name="descripcion"
+          placeholder="Descripción"
+          value={categoria.descripcion}
+          onChange={handleChange}
+        />
 
-          <textarea
-            className="form-control"
-            name="descripcion"
-            placeholder="Descripción"
-            required
-            value={categoria.descripcion}
-            onChange={handleChange}
-            rows={3}
-          />
-
-          <button className="btn-agregar">Agregar Categoría</button>
-        </div>
+        <button className="crear-categoria-btn">Agregar Categoría</button>
       </form>
     </div>
   );

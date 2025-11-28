@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "../styles/pago.css";
 import api from "../api/axiosConfig";
 import { useLocation } from "react-router-dom";
+import { showToast } from "../utils/toast";
+
 
 export default function Pago() {
   const [subtotal, setSubtotal] = useState(0);
@@ -17,14 +19,18 @@ export default function Pago() {
       .then((res) => {
         setSubtotal(res.data.total);
         setTotal(res.data.total);
-        setCantidad(res.data.items.length);
+        const totalCantidades = res.data.items.reduce(
+          (total, item) => total + item.cantidad,
+          0
+        );
+        setCantidad(totalCantidades);
       })
       .catch((err) => console.error(err));
   }, [location.pathname]);
 
   const continuarPago = async () => {
     if (metodo !== "webpay") {
-      alert("Selecciona un método de pago válido");
+      showToast("Selecciona un método de pago válido", "warning");
       return;
     }
 
@@ -34,7 +40,7 @@ export default function Pago() {
       window.location.href = `${url}?token_ws=${token}`;
     } catch (error) {
       console.error(error);
-      alert("Error al iniciar el pago");
+      showToast("Error al iniciar el pago", "danger");
     }
   };
 
@@ -44,7 +50,11 @@ export default function Pago() {
         <h2 className="titulo-metodo">METODO DE PAGO</h2>
 
         <div className="metodo-opcion">
-          <input type="radio" name="metodo" onChange={() => setMetodo("webpay")} />
+          <input
+            type="radio"
+            name="metodo"
+            onChange={() => setMetodo("webpay")}
+          />
           <i className="bi bi-wallet"></i>
           <span>WebPay</span>
         </div>
